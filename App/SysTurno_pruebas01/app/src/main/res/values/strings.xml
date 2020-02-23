@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">SysTurno_pruebas01</string>
+    <string name="login_ci_usuario">CI</string>
+    <string name="login_contrasenia_usuario">Contraseña</string>
+    <string name="login_boton_login">Iniciar Sesión</string>
+    <string name="login_boton_registro">Registrarse</string>
+    <string name="login_texto_vacante">...</string>
+</resources>

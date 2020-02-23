@@ -1,30 +1,5 @@
 <?php
 include_once "datosbd.php";
-//    
-//    $conexion = mysqli_connect($servidor,$usuario,$contraseña,$bdd);
-//
-//    if($conexion===false){
-//        echo "Error de Conexion: ".mysqli_connect_error();
-//    }
-//    else{
-//        echo "Conexión Existosa";
-//    }
-
-    //function CrearConexion($servidor,$usuario,$contraseña,$bdd){
-       // $conexion = new PDO("mysql:host=$servidor;dbname=$bdd", $usuario, $contraseña);
-            //new mysqli($servidor, $usuario, $contraseña, $bdd);
-        //mysqli_connect($servidor,$usuario,$contraseña,$bdd);
-        //if($conexion->connect_error){
-           // die("ERROR:  " . $conexion->connect_error);
-            //echo "Error de Conexion: ".mysqli_connect_error();
-        //}
-        //else{
-            //echo "Conexión Exitosa";
-            //return $conexion;
-        //}
-       // return $conexion;
-    //}
-
 
     function consultaDB($consulta) {
         // Connect to the database
@@ -43,6 +18,64 @@ include_once "datosbd.php";
         return $datos;
     }
     
+    function chequearUsuario($ci_usuario){
+        $resultado = false;
+        $conexion = GenerarConexion();
+        
+        try{
+            // set the PDO error mode to exception
+            $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $consulta = "SELECT count(*) FROM usuario WHERE CI = :ci_usuario";
+            $sentencia = $conexion->prepare($consulta);
+            $sentencia->bindParam(':ci_usuario', $ci_usuario);
+            
+            $sentencia->execute();
+            $respuesta = $sentencia->fetchAll();
+            $cantidad = $respuesta[0][0];
+            
+            if($cantidad > 0){
+                $resultado = true;
+            }
+            
+        }
+        catch(PDOException $e){
+            echo "Error: " . $e->getMessage();
+        }
+
+        $conexion=null;
+        return $resultado;
+    }
+
+    function registrarToken($token,$ci_usuario){
+        $conexion = GenerarConexion();
+        try{
+            // set the PDO error mode to exception
+            $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $consulta = "CALL registrar_token(:ciUsuario,:token)";
+            $sentencia = $conexion->prepare($consulta);
+            $sentencia->bindParam(':ciUsuario', $ci_usuario);
+            $sentencia->bindParam(':token', $token);
+            
+            $sentencia->execute();
+        }
+        catch(PDOException $e){
+            echo "Error: " . $e->getMessage();
+        }
+
+        $conexion=null;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
     function crearPartida($conexion,$nombre,$tamanio,$usuario){
         $num_consulta=0;
         try{
