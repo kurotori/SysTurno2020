@@ -18,15 +18,19 @@ class ApiCliente(private val ctx: Context) {
                                             apiResponse: ApiRespuesta
                                             ) -> Unit)
     {
-        val request: StringRequest = object : StringRequest(route.httpMethod, route.url, { response ->
-            this.handle(response, completion)
-        }, {
-            it.printStackTrace()
-            if (it.networkResponse != null && it.networkResponse.data != null)
-                this.handle(String(it.networkResponse.data), completion)
-            else
-                this.handle(getStringError(it), completion)
-        }) {
+        val request: StringRequest = object : StringRequest(
+            route.httpMethod,
+            route.url,
+            { response -> this.handle(response, completion) },
+            {
+                it.printStackTrace()
+                if (it.networkResponse != null && it.networkResponse.data != null)
+                    this.handle(String(it.networkResponse.data), completion)
+                else
+                    this.handle(getStringError(it), completion)
+             }
+        )
+        {
             override fun getParams(): MutableMap<String, String> {
                 return route.params
             }
@@ -97,7 +101,7 @@ class ApiCliente(private val ctx: Context) {
         }
     }
 
-   fun verDatosServidor(completion: (dato:DatoServidor?, message: String) -> Unit){
+   fun verDatosServidor(completion: (dato:DatoServidor?, message: String?) -> Unit){
         val ruta = ApiRuta.LeerJsonServidor(ctx)
         this.performRequest(ruta){success, response ->
             if (success){

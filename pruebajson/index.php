@@ -5,9 +5,20 @@ header("Content-Type: application/json; charset=UTF-8");
 
 
 $jsonDatos = new stdClass;
-$dato = "RECIBIDO";
 
-$jsonDatos->dato = $dato;
+class Pruebas{
+    public $dato="";
+    public $estado="";
+}
+
+$pruebas = new Pruebas();
+$pruebas->dato="RECIBIDO";
+$pruebas->estado="OK";
+
+$jsonDatos=array(
+    "Pruebas"=>$pruebas
+);
+    
 
 $objJSON = json_encode($jsonDatos);
 

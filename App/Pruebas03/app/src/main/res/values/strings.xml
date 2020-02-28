@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Pruebas03</string>
+    <string name="inicio_btn_login">Iniciar Sesión</string>
+    <string name="inicio_et_ciUsuario">CI</string>
+</resources>

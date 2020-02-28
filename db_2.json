@@ -1,0 +1,21 @@
+{
+    "cosa":[
+        {
+            "ID":1,
+            "dato":"RECIBIDO",
+            "estado":"OK"
+        },
+        {
+            "ID":2,
+            "dato":"NEGADO",
+            "estado":"ERROR"
+        }
+    ],
+    "caso":[
+        {
+            "dato":"RECIBIDO",
+            "valor":"OK"
+        }
+    ]
+    
+}
