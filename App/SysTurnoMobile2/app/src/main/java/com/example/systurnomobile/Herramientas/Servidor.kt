@@ -2,9 +2,17 @@ package com.example.systurnomobile.Herramientas
 
 import com.android.volley.Request
 
-sealed class Servidor {
+sealed class Servidor () {
 
-    private val servidor:String = "http://192.168.1.10/SysTurno2020/"
+    var ipServidor:String
+        get() {
+            return ipServidor
+        }
+        set(ip:String) {
+        ipServidor = ip
+    }
+
+    private val servidor:String = "http://"+ipServidor+"/SysTurno2020/"
 
     data class ObtenerToken(val ciUsuario:String):Servidor()
     data class Login(val ciUsuario: String, val contrasenia:String):Servidor()
