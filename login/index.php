@@ -9,7 +9,18 @@ header("Content-Type: application/json; charset=UTF-8");
 
 if($_POST){
     $ci_usuario = validarDatos($_POST["ci_usuario"]);
-    $objJSON = generarToken($ci_usuario);
+    
+    if( isset($_POST["token"]) ){
+      $token = validarDatos($_POST["token"]);  
+    }
+    else{
+        $objJSON = generarToken($ci_usuario);
+    }
+    
+        
+    
+    
+    
         
     http_response_code(200);
     echo $objJSON;

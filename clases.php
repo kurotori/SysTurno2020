@@ -1,7 +1,9 @@
 <?php
     class Token{
-        public $token="";
         public $tipo="";
+        public $token="";
+        public $idSesion="";
         public $mensaje="";
     }
+
 ?>
