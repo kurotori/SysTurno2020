@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 
     @Entity
     data class Sesion(
-        @PrimaryKey (autoGenerate = true) val id: Int?,
+        @PrimaryKey (autoGenerate = true) val id: Int? = null,
         @ColumnInfo (name = "token") val token: String?,
         @ColumnInfo (name = "idSesion") val idSesion: String?,
         @ColumnInfo (name = "mensaje") val mensaje:String?

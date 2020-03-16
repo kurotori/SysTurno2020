@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name" translatable="false">SysTurno Mobile</string>
+    <string name="login_Bienvenida_M">Systurno</string>
+    <string name="login_Bienvenida_F">Bienvenida a Systurno</string>
+    <string name="login_et_ci">C.I.:</string>
+</resources>

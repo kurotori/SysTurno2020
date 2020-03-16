@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Historial">
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:weightSum="8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent=".8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/textView42"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight=".5"
+            android:gravity="center"
+            android:text="Historial de Reservas"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/textView44"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight=".5"
+            android:gravity="center_vertical"
+            android:text="Reservas registradas hasta la fecha:" />
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:weightSum="3">
+
+                <TextView
+                    android:id="@+id/textView46"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="#000000"
+                    android:gravity="center_horizontal"
+                    android:text="Fecha:"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/textView65"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="#000000"
+                    android:gravity="center_horizontal"
+                    android:text="Hora:"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/textView66"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="#000000"
+                    android:gravity="center_horizontal"
+                    android:text="Estado:"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold" />
+            </TableRow>
+
+        </TableLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="7">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <TableLayout
+                    android:id="@+id/tblly_HistTabla"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:weightSum="3">
+
+                        <TextView
+                            android:id="@+id/textView67"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center_horizontal"
+                            android:text="TextView" />
+
+                        <TextView
+                            android:id="@+id/textView68"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center_horizontal"
+                            android:text="TextView" />
+
+                        <TextView
+                            android:id="@+id/textView69"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center_horizontal"
+                            android:text="TextView" />
+                    </TableRow>
+
+                </TableLayout>
+            </LinearLayout>
+        </ScrollView>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/button9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+</androidx.constraintlayout.widget.ConstraintLayout>

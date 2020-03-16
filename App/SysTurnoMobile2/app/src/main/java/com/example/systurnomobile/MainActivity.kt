@@ -9,8 +9,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import androidx.fragment.app.replace
+import android.widget.TextView
 import androidx.preference.PreferenceManager
 import com.example.systurnomobile.Herramientas.ManejoPreferencias
 import com.example.systurnomobile.Herramientas.ManejoURL
@@ -28,7 +27,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(tb_BarraHerramientas)
 
         //IMPORTANTE: Se inicializa la clase para manejar las solicitudes
         Solicitud.init(this)
@@ -44,7 +43,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        val etSalida:EditText = findViewById(R.id.etSalida)
+        val etSalida:TextView = findViewById(R.id.etSalida)
         etSalida.setText(ipServidor)
 
     }

@@ -10,8 +10,11 @@ import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.systurnomobile.BDD.BaseDeDatos
+import com.example.systurnomobile.BDD.ManejoBDD
 import com.example.systurnomobile.BDD.Sesion
 import com.example.systurnomobile.BDD.SesionDAO
+import io.reactivex.Completable.fromCallable
+import io.reactivex.Flowable.fromCallable
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.newCoroutineContext
@@ -23,13 +26,14 @@ import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
 import java.net.URL
 import java.net.URLEncoder
+import java.util.*
+import kotlin.concurrent.thread
 import kotlin.coroutines.*
 
 class ManejoURL(ipServidor: String) {
 
     //public var ipServidor=""
-    private var bdd: BaseDeDatos? = null
-    private var sesionDAO: SesionDAO? = null
+    private val manejoBDD:ManejoBDD = ManejoBDD()
 
     private val servidor:String = "http://"+ipServidor+"/SysTurno2020/"
 
@@ -79,29 +83,16 @@ class ManejoURL(ipServidor: String) {
 
         val solicitud:Solicitud = Solicitud(urlLogin.toString(),
             {
+                tv_destino.text=""
                 tv_destino.text = manejoJSON.SacarDatoJSON(it.toString(),"Token","token")
                 respuesta.respuesta = it.toString()
+
                 println(respuesta.token())
-                //Guardado de datos en la BDD
-                bdd = BaseDeDatos.obtenerBDD(ctx)
-                sesionDAO = bdd?.sesionDao()
 
-                var sesion = Sesion(
-                    null,
-                    respuesta.token(),
-                    respuesta.idSesion(),
-                    respuesta.mensaje())
+                
 
-                with(sesionDAO){
-                    this?.nuevaSesion(sesion)
-                }
+                tv_destino.text=manejoBDD.guardarLeer(ctx,respuesta)
 
-                var cosas = bdd?.sesionDao()?.ultimaSesion()
-                cosas?.forEach {
-                    tv_destino.setText("token: "+it.token+"\n")
-                    tv_destino.append("mensaje: "+it.mensaje)
-                    tv_destino.append("id: "+it.id)
-                }
 
             },{
                 tv_destino.text = it.toString()
