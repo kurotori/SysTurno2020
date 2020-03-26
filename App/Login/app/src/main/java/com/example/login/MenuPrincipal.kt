@@ -26,4 +26,20 @@ class MenuPrincipal : AppCompatActivity() {
         val intent: Intent= Intent(v.context,AcercaDe::class.java)
         startActivity(intent)
     }
+
+    fun verHistorial(v:View){
+        val intent: Intent = Intent(v.context, Historial::class.java)
+        //val intent:Intent = Intent(this, HistorialRclrMain::class.java)
+        startActivity(intent)
+    }
+
+    fun verTelsYDirs(v:View){
+        val intent: Intent = Intent(v.context,DirYTel::class.java)
+        startActivity(intent)
+    }
+
+    fun recordatiorios(v:View){
+        val intent: Intent = Intent(v.context,Recordatorios::class.java)
+        startActivity(intent)
+    }
 }

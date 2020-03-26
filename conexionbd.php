@@ -1,5 +1,6 @@
 <?php
 include_once "datosbd.php";
+include_once "clases.php";
 
     function consultaDB($consulta) {
         // Connect to the database
@@ -46,28 +47,170 @@ include_once "datosbd.php";
         return $resultado;
     }
 
-    function registrarToken($token,$ci_usuario){
+
+    //Recibe un token_Val y los datos del usuario y los registra en el sistema
+    //asignando el token al usuario, devuelve el .
+    function registrarToken($token_Val,$usuario_ci){
+        $num_token = 0;
         $conexion = GenerarConexion();
         try{
             // set the PDO error mode to exception
             $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $consulta = "CALL registrar_token(:ciUsuario,:token)";
+            $consulta = "CALL registrar_token(:usuarioCi,:tokenVal)";
             $sentencia = $conexion->prepare($consulta);
-            $sentencia->bindParam(':ciUsuario', $ci_usuario);
-            $sentencia->bindParam(':token', $token);
+            $sentencia->bindParam(':usuarioCi', $usuario_ci);
+            $sentencia->bindParam(':tokenVal', $token_Val);
             
             $sentencia->execute();
+            
+            $resultado = $sentencia->fetchAll();
+           
+            $num_token = $resultado[0][0];
         }
         catch(PDOException $e){
             echo "Error: " . $e->getMessage();
         }
 
         $conexion=null;
+        return $num_token;
+    }
+
+    //Recibe los datos de sesión y los registra en el servidor, devolviendo
+    //la ID numérica de la sesión en la base de datos 
+    //(no confundir con el valor de la sesión, que es alfanumérico).
+    function registrarSesion($usuario_ci,$obj_token,$sesion_val){
+        $sesion_ID = 0;
+        $conexion = GenerarConexion();
+        try{
+            // set the PDO error mode to exception
+            $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $consulta = "CALL registrar_sesion(:ciUsuario,:num_token,:sesionVal)";
+            $sentencia = $conexion->prepare($consulta);
+            $sentencia->bindParam(':ciUsuario', $usuario_ci);
+            $sentencia->bindParam(':num_token', $obj_token->token_ID);
+            $sentencia->bindParam(':sesionVal', $sesion_val);
+            
+            $sentencia->execute();
+            
+            $resultado = $sentencia->fetchAll();
+           
+            $sesion_ID = $resultado[0][0];
+        }
+        catch(PDOException $e){
+            echo "Error: " . $e->getMessage();
+        }
+
+        $conexion=null;
+        return $sesion_ID;
     }
 
 
+    //Busca y obtiene los datos de un token (marca de tiempo, dueño, estado)
+    //y los devuelve en un objeto para  su verificación
+    function buscarDatosToken($num_identificador){
+        $datosToken = new DatosToken();
+        
+        $conexion = GenerarConexion();
+        try{
+            // set the PDO error mode to exception
+            $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $consulta = "CALL buscar_datos_token(:num_token)";
+            $sentencia = $conexion->prepare($consulta);
+            $sentencia->bindParam(':num_token', $num_identificador);
+            
+            $sentencia->execute();
+            
+            $resultado = $sentencia->fetchAll();
+           
+            /*
+            public $usuario_CI="";
+            public $token_Val="";
+            public $num_ID="";
+            public $marcaTiempo="";
+            public $estado="";
+            */
+            
+            $datosToken->usuario_CI = $resultado[0][0];
+            $datosToken->token_Val = $resultado[0][1];
+            $datosToken->num_ID = $resultado[0][2];
+            $datosToken->marcaTiempo = $resultado[0][3];
+            //$datosToken->estado = $resultado[0][4];
+        }
+        catch(PDOException $e){
+            echo "Error: " . $e->getMessage();
+        }
 
+        $conexion=null;
+        return $datosToken;
+    }
 
+    //Permite ubicar los datos de un token en posesión de un usuario
+    // y devuelve un objeto con esos datos
+    //function buscarToken($token_id, $usuario_ci){
+        //NOTA: función en evaluación
+       // $obj_token = new Token();
+        
+        
+        
+       // return $obj_token;
+   // }
+
+    
+//Busca los datos del usuario en la BdD y devuelve un objeto con esos datos
+function buscarDatosLoginUsuario($usuario_CI){
+    $datosLogin = new DatosLogin();
+    
+    $conexion = GenerarConexion();
+        try{
+            // set the PDO error mode to exception
+            $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $consulta = "SELECT ci,hash FROM usuario WHERE ci = :usuario_ci";
+            $sentencia = $conexion->prepare($consulta);
+            $sentencia->bindParam(':usuario_ci', $usuario_CI);
+            
+            $sentencia->execute();
+            
+            $resultado = $sentencia->fetchAll();
+           
+            $datosLogin->usuario_CI = $resultado[0][0];
+            $datosLogin->hash = $resultado[0][1];
+        }
+        catch(PDOException $e){
+            echo "Error: " . $e->getMessage();
+        }
+
+        $conexion=null;
+    
+    return $datosLogin;
+}
+    
+    //Registra un usuario en la BdD a partir de un objeto con los datos
+    function registrarUsuario(DatosUsuario $datosUsuario){
+        $conexion = GenerarConexion();
+        try{
+            // set the PDO error mode to exception
+            $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $consulta = "CALL registrar_usuario(:usuario_ci,:hash,:nombre,:apellido,:telefono,:direccion,:email)";
+            $sentencia = $conexion->prepare($consulta);
+            $sentencia->bindParam(':usuario_ci', $datosUsuario->usuario_CI);
+            $sentencia->bindParam(':hash', $datosUsuario->hash);
+            $sentencia->bindParam(':nombre', $datosUsuario->nombre);
+            $sentencia->bindParam(':apellido', $datosUsuario->apellido);
+            $sentencia->bindParam(':telefono', $datosUsuario->telefono);
+            $sentencia->bindParam(':direccion', $datosUsuario->direccion);
+            $sentencia->bindParam(':email', $datosUsuario->email);
+            
+            $sentencia->execute();
+            echo "OK";
+        }
+        catch(PDOException $e){
+            echo "Error: " . $e->getMessage();
+        }
+
+        $conexion=null;
+    
+    }
+    
 
 
 
@@ -167,7 +310,7 @@ include_once "datosbd.php";
     }
 
     
-    function iniciarSesion($id_usuario){
+/*    function iniciarSesion($id_usuario){
         $sesion = new \stdClass();
         $sesion->id = 0;
         $sesion->mensaje = "";
@@ -190,7 +333,7 @@ include_once "datosbd.php";
 
         $conexion=null;
         return $sesion;
-    }
+    }*/
 
     function cerrarSesion($id_sesion){
         $conexion = GenerarConexion();
@@ -302,7 +445,7 @@ include_once "datosbd.php";
     }
 
     
-    function registrarUsuario($id_usuario, 
+    /*function registrarUsuario($id_usuario, 
                               $nombre_u, 
                               $nombre_p, 
                               $apellido_p,
@@ -350,6 +493,6 @@ include_once "datosbd.php";
         }
         
         return $resultado;
-    }
+    }*/
 
 ?>

@@ -9,12 +9,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Historial"></activity>
+        <activity android:name=".Recordatorios"></activity>
+        <activity android:name=".DirYTel" />
+        <activity android:name=".Historial" />
         <activity android:name=".AcercaDe" />
         <activity android:name=".CancelarTurno" />
         <activity android:name=".ReservarTurno" />
         <activity android:name=".MenuPrincipal" />
         <activity android:name=".Registro" />
+        <activity android:name=".HistorialRclrMain" />
         <activity android:name=".Inicio">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

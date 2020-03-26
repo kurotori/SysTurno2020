@@ -8,24 +8,47 @@ class Respuesta() {
 
     public var respuesta:String=""
 
-    public fun token():String{
+    public fun tokenVal():String{
         var resp:String=""
         if(respuesta.length>0){
-            resp = manejoJSON.SacarDatoJSON(respuesta,"Token","token")
+            resp = manejoJSON.SacarDatoJSON(respuesta,"Token","token_Val")
         }
         else{
-            resp = "no_token"
+            resp = "no_tokenVal"
         }
         return resp
     }
 
-    public fun idSesion():String{
+    public fun tokenId():String{
         var resp:String=""
         if(respuesta.length>0){
-            resp = manejoJSON.SacarDatoJSON(respuesta,"Token","idsesion")
+            resp = manejoJSON.SacarDatoJSON(respuesta,"Token","token_ID")
         }
         else{
-            resp = "no_idSesion"
+            resp = "no_tokenID"
+        }
+        return resp
+    }
+
+
+    public fun sesionId():String{
+        var resp:String=""
+        if(respuesta.length>0){
+            resp = manejoJSON.SacarDatoJSON(respuesta,"Token","sesion_ID")
+        }
+        else{
+            resp = "no_sesionID"
+        }
+        return resp
+    }
+
+    public fun sesionVal():String{
+        var resp:String=""
+        if(respuesta.length>0){
+            resp = manejoJSON.SacarDatoJSON(respuesta,"Token","sesion_Val")
+        }
+        else{
+            resp = "no_sesionID"
         }
         return resp
     }

@@ -22,7 +22,8 @@ abstract class BaseDeDatos:RoomDatabase() {
                     INSTANCIA = Room.databaseBuilder(
                         context.applicationContext,
                         BaseDeDatos::class.java,
-                        Environment.getExternalStorageDirectory().absolutePath+"/systurno"
+                        "systurno"
+                        //Environment.getExternalStorageDirectory().absolutePath+"/systurno"
                     ).build()
                 }
             }

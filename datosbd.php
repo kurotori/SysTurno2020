@@ -1,8 +1,8 @@
 <?php
     $servidorST="localhost";
-    $usuarioST="systurno";
-    $contraseñaST="systurno";
-    $bddST="systurno";
+    $usuarioST="systurno_mobile";
+    $contraseñaST="systurno_mobile";
+    $bddST="systurno_mobile";
     
 
 function GenerarConexion(){

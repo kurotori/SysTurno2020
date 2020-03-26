@@ -42,7 +42,9 @@ class ManejoURL(ipServidor: String) {
     private val manejoJSON:ManejoJSON = ManejoJSON()
 
 
-
+    /**
+     * Función de prueba para comprobar acceso a los datos del servidor
+     */
     public fun leerPrueba(ctx:Context, tv_destino: TextView){
         val queue = Volley.newRequestQueue(ctx)
         val url = urlPruebas.toString()
@@ -59,47 +61,72 @@ class ManejoURL(ipServidor: String) {
         queue.add(stringRequest)
     }
 
-   public fun obtenerToken(ctx:Context,
+    /**
+     * Solicita un token al servidor e intenta iniciar sesión con el mismo
+     */
+    public fun obtenerToken(ctx:Context,
                             ciUsuario: String,
-                            tv_destino: TextView,
+                           contrasenia:String,
                             respuesta: Respuesta){
         val solicitud:Solicitud = Solicitud(urlLogin.toString(),
             {
-                tv_destino.text = manejoJSON.SacarDatoJSON(it.toString(),"Token","token")
                 respuesta.respuesta = it.toString()
-                println(respuesta.token())
+
+                var resp2:Respuesta = Respuesta()
+                iniciarSesion(
+                    ctx,
+                    ciUsuario,
+                    contrasenia,
+                    respuesta.tokenVal(),
+                    respuesta.tokenId(),
+                    resp2
+                )
+
 
             },{
-                tv_destino.text = it.toString()
+                println(it.toString())//tv_destino.text = it.toString()
             })
-        solicitud.POST("ci_usuario" to ciUsuario)
+        solicitud.POST("usuario_ci" to ciUsuario)
     }
 
+
+    /**
+     * Genera el proceso de iniciar sesión en el servidor
+     */
     public fun iniciarSesion(ctx:Context,
                             ciUsuario: String,
-                            contrasenia:String,
-                            tv_destino: TextView, //TODO: Retirar el parámetro tv_destino
+                            contrasenia: String,
+                             token_val:String,
+                             token_id:String,
                             respuesta: Respuesta){
 
         val solicitud:Solicitud = Solicitud(urlLogin.toString(),
             {
-                tv_destino.text=""
-                tv_destino.text = manejoJSON.SacarDatoJSON(it.toString(),"Token","token")
                 respuesta.respuesta = it.toString()
+                println("mensaje: "+respuesta.mensaje())
+                println("token ID: "+respuesta.tokenId())
+                println("token Val: "+respuesta.tokenVal())
+                println("sesion ID: "+respuesta.sesionId())
+                println("sesion Val: "+respuesta.sesionVal())
 
-                println(respuesta.token())
-
-                
-
-                tv_destino.text=manejoBDD.guardarLeer(ctx,respuesta)
-
-
+                //tv_destino.text=manejoBDD.guardarLeer(ctx,respuesta)
             },{
-                tv_destino.text = it.toString()
+                println(it.toString())//tv_destino.text = it.toString()
             })
-        solicitud.POST("ci_usuario" to ciUsuario,"contrasenia" to contrasenia)
+        solicitud.POST(
+            "usuario_ci" to ciUsuario,
+            "contrasenia" to contrasenia,
+            "token_val" to token_val,
+            "token_id" to token_id
+            )
     }
 
+    /**
+     * Permite analizar la respuesta recibida del servidor
+     */
+    fun analizarRespuesta(respuesta:Respuesta){
+
+    }
 
 
 }

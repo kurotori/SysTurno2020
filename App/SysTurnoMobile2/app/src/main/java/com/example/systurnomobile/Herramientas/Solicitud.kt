@@ -50,7 +50,7 @@ class Solicitud(val url:String,
         var context: Context? = null
         val volley: RequestQueue by lazy {
             Volley.newRequestQueue(context
-                ?: throw NullPointerException(" Initialize WolfRequest in application class"))
+                ?: throw NullPointerException(" Initialize Solicitud.kt in application class"))
         }
 
         fun init(context: Context) {

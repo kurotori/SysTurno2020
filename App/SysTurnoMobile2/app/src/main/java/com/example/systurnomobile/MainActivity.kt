@@ -15,8 +15,9 @@ import com.example.systurnomobile.Herramientas.ManejoPreferencias
 import com.example.systurnomobile.Herramientas.ManejoURL
 import com.example.systurnomobile.Herramientas.Respuesta
 import com.example.systurnomobile.Herramientas.Solicitud
-
 import kotlinx.android.synthetic.main.activity_main.*
+
+import kotlinx.android.synthetic.main.activity_main_original.*
 import kotlinx.android.synthetic.main.inicio.*
 
 class MainActivity : AppCompatActivity() {
@@ -27,24 +28,25 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        //setContentView(R.layout.activity_main_original)
         setSupportActionBar(tb_BarraHerramientas)
 
         //IMPORTANTE: Se inicializa la clase para manejar las solicitudes
         Solicitud.init(this)
 
         //fab se refiere al botón flotante en la interfáz
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-        }
+//        fab.setOnClickListener { view ->
+  //          Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+    //                .setAction("Action", null).show()
+      //  }
 
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this/*  Activity context */)
         ipServidor = sharedPreferences.getString("ipServidor","").toString()
 
 
 
-        val etSalida:TextView = findViewById(R.id.etSalida)
-        etSalida.setText(ipServidor)
+       // val etSalida:TextView = findViewById(R.id.etSalida)
+        //etSalida.setText(ipServidor)
 
     }
 
@@ -81,14 +83,23 @@ class MainActivity : AppCompatActivity() {
     fun iniciarSesion(v: View){
         v.hideKeyboard()
         ipServidor = ManejoPreferencias(this).obtenerServidor()
-        val ciUsuario:String = etCiUsuario.text.toString()
+        val ciUsuario:String = et_InicioCiUsuario.text.toString()//et_ICiUsuario.text.toString()
+        val contrasenia:String = et_InicioContrasenia.text.toString()//etContrasenia.text.toString()
+        println(ciUsuario)
         var objRespuesta:Respuesta = Respuesta()
 
         val manejoURL: ManejoURL = ManejoURL(ipServidor)
         //manejoURL.ipServidor = ipServidor
-        //manejoURL.obtenerToken(this,ciUsuario,etSalida,objRespuesta)
-        manejoURL.iniciarSesion(this,ciUsuario,"",etSalida,objRespuesta)
+        manejoURL.obtenerToken(this,ciUsuario,contrasenia,objRespuesta)
+        //manejoURL.iniciarSesion(this,ciUsuario,"",etSalida,objRespuesta)
+    }
 
+    fun irARegistro(v:View){
 
+    }
+
+    fun salir(v:View){
+        finishAffinity()
+        //this.finish()
     }
 }
