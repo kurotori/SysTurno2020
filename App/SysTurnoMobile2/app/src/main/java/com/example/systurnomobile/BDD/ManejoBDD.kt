@@ -49,7 +49,7 @@ class ManejoBDD {
         return datos
     }
 
-    fun guardarDatos(ctx:Context,respuesta: Respuesta){
+    fun guardarSesion(ctx:Context,respuesta: Respuesta){
         val thread:Thread = thread(start = true){
             //Guardado de datos en la BDD
             bdd = BaseDeDatos.obtenerBDD(ctx)
@@ -68,5 +68,36 @@ class ManejoBDD {
                 this?.nuevaSesion(sesion)
             }
         }
+    }
+
+    /**
+     * Lee la última sesión almacenada en la base de datos local
+     */
+    fun leerSesion(ctx: Context): Sesion? {
+        var sesion:Sesion? = null
+
+        val thread:Thread = thread(start = true){
+            bdd = BaseDeDatos.obtenerBDD(ctx)
+            sesionDAO = bdd?.sesionDao()
+
+            var sesiones = bdd?.sesionDao()?.ultimaSesion()
+
+            sesiones?.forEach {
+                var ses:Sesion = Sesion(
+                    id = it.id,
+                    tokenId = it.tokenId,
+                    tokenVal = it.tokenVal,
+                    sesionId = it.sesionId,
+                    sesionVal = it.sesionVal,
+                    mensaje = it.mensaje
+                )
+                println("token Val:"+it.tokenVal)
+                sesion = ses
+            }
+        }
+        //La función join del thread es importante ya que fuerza al sistema a esperar
+        // al proceso del thread a que termine
+        thread.join()
+        return sesion
     }
 }

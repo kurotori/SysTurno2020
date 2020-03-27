@@ -1,7 +1,14 @@
 package com.example.systurnomobile.Herramientas
 
 import android.content.Context
+import android.content.DialogInterface
+import android.content.Intent
+import android.view.View
+import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import com.android.volley.Request
 import com.android.volley.RequestQueue
@@ -13,6 +20,7 @@ import com.example.systurnomobile.BDD.BaseDeDatos
 import com.example.systurnomobile.BDD.ManejoBDD
 import com.example.systurnomobile.BDD.Sesion
 import com.example.systurnomobile.BDD.SesionDAO
+import com.example.systurnomobile.MenuPrincipal
 import io.reactivex.Completable.fromCallable
 import io.reactivex.Flowable.fromCallable
 import kotlinx.coroutines.async
@@ -39,6 +47,8 @@ class ManejoURL(ipServidor: String) {
 
     public val urlPruebas: URL = URL(servidor+"pruebajson/")
     public val urlLogin:URL = URL(servidor+"login/")
+    val urlValidarSesion:URL = URL(servidor+"validarSesion/")
+
     private val manejoJSON:ManejoJSON = ManejoJSON()
 
 
@@ -64,25 +74,26 @@ class ManejoURL(ipServidor: String) {
     /**
      * Solicita un token al servidor e intenta iniciar sesión con el mismo
      */
-    public fun obtenerToken(ctx:Context,
+    public fun obtenerToken(v:View,//ctx:Context,
                             ciUsuario: String,
                            contrasenia:String,
-                            respuesta: Respuesta){
+                            respuesta: Respuesta,
+                            panelEspera: RelativeLayout
+    ){
         val solicitud:Solicitud = Solicitud(urlLogin.toString(),
             {
                 respuesta.respuesta = it.toString()
 
-                var resp2:Respuesta = Respuesta()
                 iniciarSesion(
-                    ctx,
+                    v,
                     ciUsuario,
                     contrasenia,
                     respuesta.tokenVal(),
                     respuesta.tokenId(),
-                    resp2
+                    respuesta
                 )
 
-
+                panelEspera.visibility = View.GONE
             },{
                 println(it.toString())//tv_destino.text = it.toString()
             })
@@ -93,23 +104,40 @@ class ManejoURL(ipServidor: String) {
     /**
      * Genera el proceso de iniciar sesión en el servidor
      */
-    public fun iniciarSesion(ctx:Context,
+    public fun iniciarSesion(v:View,//ctx:Context,
                             ciUsuario: String,
                             contrasenia: String,
                              token_val:String,
                              token_id:String,
-                            respuesta: Respuesta){
+                            respuesta: Respuesta
+    ){
 
         val solicitud:Solicitud = Solicitud(urlLogin.toString(),
             {
+                val ctx = v.context
                 respuesta.respuesta = it.toString()
+
+                println("tipo: "+respuesta.tipo())
                 println("mensaje: "+respuesta.mensaje())
                 println("token ID: "+respuesta.tokenId())
                 println("token Val: "+respuesta.tokenVal())
                 println("sesion ID: "+respuesta.sesionId())
                 println("sesion Val: "+respuesta.sesionVal())
 
-                //tv_destino.text=manejoBDD.guardarLeer(ctx,respuesta)
+                if(analizarRespuesta(respuesta,ctx)){
+                    //Guarda los datos de sesión en la base de datos local
+                    manejoBDD.guardarSesion(ctx, respuesta)
+                    //Pasaje al menú principal
+                    val intent: Intent = Intent(ctx,MenuPrincipal::class.java)
+
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    intent.putExtra("EXIT", true)
+                    ContextCompat.startActivity(ctx,intent,null)
+                }
+
+
             },{
                 println(it.toString())//tv_destino.text = it.toString()
             })
@@ -122,10 +150,43 @@ class ManejoURL(ipServidor: String) {
     }
 
     /**
-     * Permite analizar la respuesta recibida del servidor
+     * Permite analizar la respuesta recibida del servidor.
+     * Devuelve 'false' si la respuesta tiene tipo 'ERROR'
+     * de lo contrario devuelve 'true'
      */
-    fun analizarRespuesta(respuesta:Respuesta){
+    fun analizarRespuesta(respuesta:Respuesta, ctx: Context):Boolean{
+        var resultado:Boolean = false
 
+        if (respuesta.tipo().equals("ERROR")){
+            resultado = false
+            val adv = mostrarAdvertencia(respuesta.tipo(),respuesta.mensaje(),ctx)
+            adv?.show()
+        }
+        else{
+            resultado = true
+        }
+        return resultado
+    }
+
+    /**
+     * Permite generar un diálogo con advertencia en la pantalla
+     */
+    fun mostrarAdvertencia(titulo: String, mensaje:String, ctx:Context): AlertDialog? {
+        val constr: AlertDialog.Builder = ctx?.let{
+            AlertDialog.Builder(it)
+        }
+        constr.apply {
+            setPositiveButton("Aceptar",
+                DialogInterface.OnClickListener { dialog, id ->
+                    // Este dialogo solo muestra una advertencia, que se establece con el mensaje
+                })
+        }
+
+        constr.setMessage(mensaje)
+            .setTitle(titulo)
+
+        val dialogo: AlertDialog? = constr.create()
+        return dialogo
     }
 
 

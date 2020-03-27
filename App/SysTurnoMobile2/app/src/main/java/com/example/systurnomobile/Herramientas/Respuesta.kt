@@ -30,7 +30,6 @@ class Respuesta() {
         return resp
     }
 
-
     public fun sesionId():String{
         var resp:String=""
         if(respuesta.length>0){
@@ -60,6 +59,17 @@ class Respuesta() {
         }
         else{
             resp = "no_mensaje"
+        }
+        return resp
+    }
+
+    public fun tipo():String{
+        var resp:String=""
+        if(respuesta.length>0){
+            resp = manejoJSON.SacarDatoJSON(respuesta,"Token","tipo")
+        }
+        else{
+            resp = "no_tipo"
         }
         return resp
     }

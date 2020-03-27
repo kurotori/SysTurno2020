@@ -36,4 +36,8 @@
         public $usuario_CI = "";
         public $hash = "";
     }
+
+ class validarSesion{
+     public $valida = "";
+ }
 ?>
