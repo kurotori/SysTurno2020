@@ -144,9 +144,9 @@
 
 
     //Confirma la validez de una sesión
-    function validarSesion($obj_sesion,$obj_token,$usuario_CI){
+   // function validarSesion($obj_sesion,$obj_token,$usuario_CI){
         
-    }
+    //}
         
         
         
