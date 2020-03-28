@@ -20,6 +20,7 @@ import com.example.systurnomobile.BDD.BaseDeDatos
 import com.example.systurnomobile.BDD.ManejoBDD
 import com.example.systurnomobile.BDD.Sesion
 import com.example.systurnomobile.BDD.SesionDAO
+import com.example.systurnomobile.ManejoDeGUI
 import com.example.systurnomobile.MenuPrincipal
 import io.reactivex.Completable.fromCallable
 import io.reactivex.Flowable.fromCallable
@@ -42,6 +43,7 @@ class ManejoURL(ipServidor: String) {
 
     //public var ipServidor=""
     private val manejoBDD:ManejoBDD = ManejoBDD()
+    private val manejoDeGUI:ManejoDeGUI = ManejoDeGUI()
 
     //private val servidor:String = "http://"+ipServidor+"/SysTurno2020/"
     private val servidor:String = "http://"+ipServidor+"/"
@@ -128,14 +130,19 @@ class ManejoURL(ipServidor: String) {
                 if(analizarRespuesta(respuesta,ctx)){
                     //Guarda los datos de sesión en la base de datos local
                     manejoBDD.guardarSesion(ctx, respuesta)
+                    //Guarda los datos del Usuario en la base de datos local
+                    // por ahora solo la CI
+                    var ciUsr: Int = ciUsuario.toInt()
+                    manejoBDD.guardarCiUsuario(ctx,ciUsr)
                     //Pasaje al menú principal
-                    val intent: Intent = Intent(ctx,MenuPrincipal::class.java)
+                    manejoDeGUI.irAMenuPrincipal(v)
+                    /*val intent: Intent = Intent(ctx,MenuPrincipal::class.java)
 
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     intent.putExtra("EXIT", true)
-                    ContextCompat.startActivity(ctx,intent,null)
+                    ContextCompat.startActivity(ctx,intent,null)*/
                 }
 
 
@@ -169,11 +176,32 @@ class ManejoURL(ipServidor: String) {
         return resultado
     }
 
-    fun validarSesion(v:View,
+    fun validarSesion(ctx:Context,//v:View,
                       ciUsuario: String,
-                      sesion:Sesion
+                      sesion:Sesion,
+                      respuesta: RespValidarSesion
     ){
+        val solicitud: Solicitud= Solicitud(
+            urlValidarSesion.toString(),
+            {
+                //val ctx = v.context
+                respuesta.respuesta = it.toString()
 
+                if (respuesta.valida().equals("true")){
+                    manejoDeGUI.irAMenuPrincipal(ctx)
+                }
+                else{
+                    manejoDeGUI.irAIniciarSesion(ctx)
+                }
+
+            },
+            {}
+        )
+        solicitud.POST(
+            "ci_usuario" to ciUsuario,
+            "sesion_val" to sesion.sesionVal.toString(),
+            "token_val" to sesion.tokenVal.toString()
+        )
     }
 
 

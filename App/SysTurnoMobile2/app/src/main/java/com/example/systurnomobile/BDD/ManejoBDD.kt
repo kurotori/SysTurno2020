@@ -9,6 +9,7 @@ class ManejoBDD {
 
     private var bdd: BaseDeDatos? = null
     private var sesionDAO: SesionDAO? = null
+    private var usuarioDAO: UsuarioDAO? = null
 
     /**
      * Funcion de pruebas para guardar datos recibidos del servidor y leerlos
@@ -47,6 +48,23 @@ class ManejoBDD {
         thread.join()
         //println(datos)
         return datos
+    }
+
+    /**
+     * Crea un usuario en a base local, pero solo almacena su CI
+     */
+    fun guardarCiUsuario(ctx:Context,ciUsuario:Int){
+        val thread:Thread = thread(start = true){
+            bdd = BaseDeDatos.obtenerBDD(ctx)
+            usuarioDAO = bdd?.usuarioDao()
+
+            var usuario = Usuario(
+                ciUsuario
+            )
+            with(usuarioDAO){
+                this?.nuevoUsuario(usuario)
+            }
+        }
     }
 
     fun guardarSesion(ctx:Context,respuesta: Respuesta){
@@ -100,4 +118,31 @@ class ManejoBDD {
         thread.join()
         return sesion
     }
+
+    /**
+     * Lee la última sesión almacenada en la base de datos local
+     */
+    fun leerCiUsuario(ctx: Context): Usuario? {
+        var usuario:Usuario? = null
+
+        val thread:Thread = thread(start = true){
+            bdd = BaseDeDatos.obtenerBDD(ctx)
+            usuarioDAO = bdd?.usuarioDao()
+
+            var usuarios = bdd?.usuarioDao()?.verDatosUsuario()
+
+            usuarios?.forEach {
+                var usr: Usuario = Usuario(
+                    ciUsuario = it.ciUsuario
+                )
+                println("ci Usuario:"+it.ciUsuario)
+                usuario = usr
+            }
+        }
+        //La función join del thread es importante ya que fuerza al sistema a esperar
+        // al proceso del thread a que termine
+        thread.join()
+        return usuario
+    }
+
 }

@@ -28,12 +28,13 @@ if($_POST){
                 $objJSON = validarSesion($usuario_ci,$token_val,$sesion_val);
                 
                 http_response_code(200);
-                $JSON_string = SesionValidaAJSON($objJSON);//SesionValida($objJSON);
-                echo "$JSON_string";
+                
 
             }
         }
     }
+    $JSON_string = SesionValidaAJSON($objJSON);//SesionValida($objJSON);
+    echo "$JSON_string";
 }
 
 
