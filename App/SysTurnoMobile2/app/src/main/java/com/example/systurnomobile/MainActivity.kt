@@ -9,6 +9,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.preference.PreferenceManager
+import com.example.systurnomobile.BDD.ManejoBDD
 import com.example.systurnomobile.Herramientas.ManejoPreferencias
 import com.example.systurnomobile.Herramientas.ManejoURL
 import com.example.systurnomobile.Herramientas.Respuesta
@@ -25,11 +26,15 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_original)
-        //setContentView(R.layout.activity_main_original)
         setSupportActionBar(tb_BarraHerramientas)
 
         //IMPORTANTE: Se inicializa la clase para manejar las solicitudes
         Solicitud.init(this)
+
+        val manejoBDD = ManejoBDD()
+        manejoBDD.borrarUsuarios(this)
+
+
 
        /* //fab se refiere al botón flotante en la interfáz
         fab.setOnClickListener { view ->

@@ -186,6 +186,8 @@ class ManejoURL(ipServidor: String) {
             {
                 //val ctx = v.context
                 respuesta.respuesta = it.toString()
+                println("-RR->"+respuesta.respuesta)
+                println("-R->"+respuesta.valida())
 
                 if (respuesta.valida().equals("true")){
                     manejoDeGUI.irAMenuPrincipal(ctx)

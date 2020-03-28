@@ -40,8 +40,8 @@ class PantallaInicial : AppCompatActivity() {
         }
         else{
             //tv_pinicio_datos.text = manejoBDD.leerSesion(this)?.tokenVal
-           // var objRespuesta:RespValidarSesion = RespValidarSesion()
-            //manejoURL.validarSesion(this,usuario?.ciUsuario.toString(),sesion,objRespuesta)
+            var objRespuesta:RespValidarSesion = RespValidarSesion()
+            manejoURL.validarSesion(this,usuario?.ciUsuario.toString(),sesion,objRespuesta)
         }
 
     }

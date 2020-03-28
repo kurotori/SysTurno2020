@@ -145,4 +145,17 @@ class ManejoBDD {
         return usuario
     }
 
+    /**
+     * Borra todos los datos de Usuario de la base local
+     */
+    fun borrarUsuarios(ctx: Context){
+        val thread:Thread = thread(start = true) {
+            bdd = BaseDeDatos.obtenerBDD(ctx)
+            usuarioDAO = bdd?.usuarioDao()
+
+            usuarioDAO?.borrarTodosLosUsuarios()
+        }
+        thread.join()
+    }
+
 }

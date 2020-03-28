@@ -235,7 +235,16 @@ function buscarDatosLoginUsuario($usuario_CI){
                     if($vinculos == 1){
                         $sesionValida->valida = "true";
                     }
+                    else{
+                        $sesionValida->valida = "false";
+                    }
                 }
+                else{
+                    $sesionValida->valida = "false";
+                }
+            }
+            else{
+                $sesionValida->valida = "false";
             }
         }
         catch(PDOException $e){
