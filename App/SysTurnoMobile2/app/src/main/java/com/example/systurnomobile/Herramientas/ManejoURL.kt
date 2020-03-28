@@ -176,11 +176,17 @@ class ManejoURL(ipServidor: String) {
         return resultado
     }
 
+    /**
+     * Solicita una vlaidación de sesión guardado
+     */
     fun validarSesion(ctx:Context,//v:View,
-                      ciUsuario: String,
+                      usuarioCi: String,
                       sesion:Sesion,
                       respuesta: RespValidarSesion
     ){
+        var sesion_val:String = sesion.sesionVal.toString()
+        var token_val:String = sesion.tokenVal.toString()
+
         val solicitud: Solicitud= Solicitud(
             urlValidarSesion.toString(),
             {
@@ -200,9 +206,9 @@ class ManejoURL(ipServidor: String) {
             {}
         )
         solicitud.POST(
-            "ci_usuario" to ciUsuario,
-            "sesion_val" to sesion.sesionVal.toString(),
-            "token_val" to sesion.tokenVal.toString()
+            "usuario_ci" to usuarioCi,
+            "sesion_val" to sesion_val,
+            "token_val" to token_val
         )
     }
 

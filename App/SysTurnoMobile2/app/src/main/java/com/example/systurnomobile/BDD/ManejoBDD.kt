@@ -109,13 +109,18 @@ class ManejoBDD {
                     sesionVal = it.sesionVal,
                     mensaje = it.mensaje
                 )
-                println("token Val:"+it.tokenVal)
+                println("G:token ID:"+it.tokenId)
+                println("G:token Val:"+it.tokenVal)
+                println("G:sesion ID:"+it.sesionId)
+                println("G:sesion Val:"+it.sesionVal)
                 sesion = ses
             }
         }
         //La función join del thread es importante ya que fuerza al sistema a esperar
         // al proceso del thread a que termine
         thread.join()
+
+        println("SG:>"+sesion?.sesionVal)
         return sesion
     }
 
