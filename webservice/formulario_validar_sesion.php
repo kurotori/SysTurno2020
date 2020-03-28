@@ -13,6 +13,8 @@
             
             <label for="sesion_val">Sesion Val</label><br /> 
             <input id="sesion_val" name="sesion_val" type="text" /> <br />
+            
+            <input type="submit" value="Enviar">
         </form>
     </body>
 </html>
