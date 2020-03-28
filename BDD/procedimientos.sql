@@ -151,7 +151,7 @@ CREATE DEFINER='systurno_mobile'@'localhost'
 PROCEDURE validar_sesion( 
 	IN usuario_ci int(8) unsigned,
 	IN token_val varchar(60),
-	IN seson_val varchar(60)
+	IN sesion_val varchar(60)
 )
 BEGIN
 	DECLARE usr_ci int(8) unsigned;

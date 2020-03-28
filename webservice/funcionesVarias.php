@@ -26,6 +26,16 @@
         return $objJSON;
     }
 
+    //Pasa un objeto SesionValida a JSON
+    function SesionValidaAJSON(SesionValida $objSV){
+        $jsonDatos = new stdClass;
+        $jsonDatos=array("SesionValida"=>$objSV);
+        
+        $objJSON = json_encode($jsonDatos);
+
+        return $objJSON;
+    }
+
     //Comprueba la identidad del usuario y si es válido, 
     //registra y entrega objeto conteniendo un token de acceso al sistema
     function generarToken($usuario_ci){
