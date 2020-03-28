@@ -1,6 +1,7 @@
 <?php
 include_once "datosbd.php";
 include_once "clases.php";
+include_once "funcionesVarias.php";
 
     function consultaDB($consulta) {
         // Connect to the database
@@ -12,12 +13,7 @@ include_once "clases.php";
     }
 
     
-    function validarDatos($datos){
-        $datos = trim($datos);
-        $datos = stripslashes($datos);
-        $datos = htmlspecialchars($datos);
-        return $datos;
-    }
+    
     
     function chequearUsuario($ci_usuario){
         $resultado = false;
@@ -211,6 +207,46 @@ function buscarDatosLoginUsuario($usuario_CI){
     
     }
     
+    //Recibe los datos de sesión del usuario y los valida contra la BdD
+    function validarSesion($usuario_ci, $token_val, $sesion_val){
+        $sesionValida = new SesionValida();
+        $sesionValida->valida = "false";
+        
+        $conexion = GenerarConexion();
+        try{
+            // set the PDO error mode to exception
+            $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $consulta = "CALL validar_sesion(:usuarioCi, :tokenVal, :sesionVal)";
+            $sentencia = $conexion->prepare($consulta);
+            $sentencia->bindParam(':usuarioCi', $usuario_ci);
+            $sentencia->bindParam(':tokenVal', $token_val);
+            $sentencia->bindParam(':sesionVal', $sesion_val);
+            
+            $sentencia->execute();
+            
+            $resultado = $sentencia->fetchAll();
+           
+            $sesiones = $resultado[0][0];
+            $tokens = $resultado[0][1];
+            $vinculos = $resultado[0][2];
+           
+            if($sesiones == 1){
+                if($tokens == 1){
+                    if($vinculos == 1){
+                        $sesionValida->valida = "true";
+                    }
+                }
+            }
+        }
+        catch(PDOException $e){
+            echo "Error: " . $e->getMessage();
+        }
+
+        $conexion=null;
+        return $sesionValida;
+    }
+
+
 
 
 

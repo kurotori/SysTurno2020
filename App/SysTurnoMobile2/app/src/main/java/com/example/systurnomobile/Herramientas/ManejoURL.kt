@@ -43,8 +43,9 @@ class ManejoURL(ipServidor: String) {
     //public var ipServidor=""
     private val manejoBDD:ManejoBDD = ManejoBDD()
 
-    private val servidor:String = "http://"+ipServidor+"/SysTurno2020/"
-
+    //private val servidor:String = "http://"+ipServidor+"/SysTurno2020/"
+    private val servidor:String = "http://"+ipServidor+"/"
+    
     public val urlPruebas: URL = URL(servidor+"pruebajson/")
     public val urlLogin:URL = URL(servidor+"login/")
     val urlValidarSesion:URL = URL(servidor+"validarSesion/")

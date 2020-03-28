@@ -1,5 +1,6 @@
 package com.example.systurnomobile
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -15,7 +16,8 @@ class PantallaInicial : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_pantalla_inicial)
+        setContentView(R.layout.pantalla_inicio)
+        //setContentView(R.layout.activity_pantalla_inicial)
 
         //IMPORTANTE: Se inicializa la clase para manejar las solicitudes
         Solicitud.init(this)
@@ -23,17 +25,16 @@ class PantallaInicial : AppCompatActivity() {
         var sesion: Sesion? = manejoBDD.leerSesion(this)
 
         if (sesion == null){
-            val intent: Intent = Intent(this,MainActivity::class.java)
-            startActivity(intent)
+            //irAInicioSesion(this)
         }
         else{
-            tv_pinicio_datos.text = manejoBDD.leerSesion(this)?.tokenVal
+            //tv_pinicio_datos.text = manejoBDD.leerSesion(this)?.tokenVal
         }
 
     }
 
-    fun irAInicioSesion(v: View){
-        val intent: Intent = Intent(v.context,MainActivity::class.java)
+    fun irAInicioSesion(ctx:Context){
+        val intent: Intent = Intent(ctx,MainActivity::class.java)
         startActivity(intent)
     }
 }

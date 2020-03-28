@@ -37,7 +37,7 @@
         public $hash = "";
     }
 
- class validarSesion{
+ class SesionValida{
      public $valida = "";
  }
 ?>

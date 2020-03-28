@@ -2,6 +2,15 @@
     include_once "conexionbd.php";
     include_once "clases.php";
     
+    //Valida y limpia los datos que provienen del POST para
+    // evitar inyecciones SQL
+    function validarDatos($datos){
+        $datos = trim($datos);
+        $datos = stripslashes($datos);
+        $datos = htmlspecialchars($datos);
+        return $datos;
+    }
+
     //Recibe una contraseña y devuelve un hash de la misma
     function crearHash($contrasenia){
         $hashC = password_hash($contrasenia,PASSWORD_DEFAULT);

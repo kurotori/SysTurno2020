@@ -78,7 +78,7 @@ if($_POST){
     http_response_code(200);
     $JSON_string = TokenAJSON($objJSON);
     echo "$JSON_string";
-    $cosa = array_keys($_POST);
+    //$cosa = array_keys($_POST);
     
     //echo $objJSON;
 }
