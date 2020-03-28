@@ -148,7 +148,7 @@ DELIMITER ;
 /* Buscar datos de sesión para validarla */
 DELIMITER $$
 CREATE DEFINER='systurno_mobile'@'localhost' 
-PROCEDURE buscar_datos_token( 
+PROCEDURE validar_sesion( 
 	IN usuario_ci int(8) unsigned,
 	IN token_val varchar(60),
 	IN seson_val varchar(60)

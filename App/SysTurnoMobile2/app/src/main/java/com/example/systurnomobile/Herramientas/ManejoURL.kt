@@ -45,7 +45,7 @@ class ManejoURL(ipServidor: String) {
 
     //private val servidor:String = "http://"+ipServidor+"/SysTurno2020/"
     private val servidor:String = "http://"+ipServidor+"/"
-    
+
     public val urlPruebas: URL = URL(servidor+"pruebajson/")
     public val urlLogin:URL = URL(servidor+"login/")
     val urlValidarSesion:URL = URL(servidor+"validarSesion/")
@@ -168,6 +168,19 @@ class ManejoURL(ipServidor: String) {
         }
         return resultado
     }
+
+    fun validarSesion(v:View,
+                      ciUsuario: String,
+                      sesion:Sesion
+    ){
+
+    }
+
+
+
+
+
+
 
     /**
      * Permite generar un diálogo con advertencia en la pantalla

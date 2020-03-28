@@ -10,9 +10,11 @@ insert,select,update,delete,
 create routine, alter routine, execute on systurno_mobile.* 
 to "systurno_mobile"@"localhost";
 
+
+/*  Csp9db]q2-F;Qfgc  */
 /* ----------------------*/
 
-CREATE TABLE systurno_mobile.Doctor ( 
+CREATE TABLE Doctor ( 
   ci int(8) unsigned NOT NULL unique primary key, 
   nombre varchar(30) NOT NULL, 
   apellido varchar(30) NOT NULL, 
@@ -23,7 +25,7 @@ CREATE TABLE systurno_mobile.Doctor (
   especialidad varchar(40) NOT NULL 
 );
 
-CREATE TABLE systurno_mobile.Medicamento ( 
+CREATE TABLE Medicamento ( 
   id int(11) unsigned NOT NULL unique auto_increment primary key, 
   nombre varchar(30) NOT NULL, 
   laboratorio varchar(30) NOT NULL, 
@@ -33,12 +35,12 @@ CREATE TABLE systurno_mobile.Medicamento (
   stock int(4) NOT NULL 
 ); 
 
-CREATE TABLE systurno_mobile.Receta ( 
+CREATE TABLE Receta ( 
   id int(11) unsigned NOT NULL unique auto_increment primary key, 
   fecha date NOT NULL 
 ); 
 
-CREATE TABLE systurno_mobile.Usuario ( 
+CREATE TABLE Usuario ( 
   ci int(8) unsigned NOT NULL unique primary key, 
   hash varchar(80) NOT NULL
 );
@@ -46,7 +48,7 @@ CREATE TABLE systurno_mobile.Usuario (
 /*NOTA: Se separan los datos del usuario de la tabla usuario
 	para mejorar la eficiencia de la misma durante el login.
 */
-CREATE TABLE systurno_mobile.Perfil(
+CREATE TABLE Perfil(
 	id int(8) unsigned NOT NULL unique primary key,
 	nombre varchar(30) NOT NULL, 
 	apellido varchar(30) NOT NULL, 
@@ -57,20 +59,20 @@ CREATE TABLE systurno_mobile.Perfil(
 	recibeEmail enum('si','no') NOT NULL default 'si'
 );
 
-CREATE TABLE systurno_mobile.Turno ( 
+CREATE TABLE Turno ( 
   id int(11) unsigned NOT NULL unique auto_increment primary key, 
   fechahora datetime NOT NULL, 
   estado enum('confirmado','cancelado','usado','abierto') NOT NULL DEFAULT 'abierto' 
 );
 
-create table systurno_mobile.Token(
+create table Token(
  id int(11) unsigned unique not null auto_increment primary key,
  valor varchar(60) not null,
  marcaTiempo timestamp not null default current_timestamp/*,
  estado enum('activo','inactivo') default 'activo'*/
  );
 
-CREATE TABLE systurno_mobile.Sesion( 
+CREATE TABLE Sesion( 
   id int(11) unsigned NOT NULL unique auto_increment primary key,
   valor varchar(60) not null,
   fechahora timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, 
@@ -80,19 +82,19 @@ CREATE TABLE systurno_mobile.Sesion(
 /*----------------*/
 
 /* 1 usuario tiene 1 perfil */
-CREATE TABLE systurno_mobile.Tiene(
+CREATE TABLE Tiene(
 	usuario_ci int(8) unsigned unique not null primary key,
 	perfil_id int(8) unsigned unique not null
 );
 
 /* 1 turno asociado con n receta */
-CREATE TABLE systurno_mobile.Asociado ( 
+CREATE TABLE Asociado ( 
   turno_id int(11) unsigned NOT NULL, 
   receta_id int(11) unsigned NOT NULL unique primary key
 );
 
 /* n receta contiene n medicamento */
-CREATE TABLE systurno_mobile.Contiene (
+CREATE TABLE Contiene (
   id int(11) unsigned NOT NULL unique primary key,
   receta_id int(11) unsigned NOT NULL,
   medicamento_id int(11) unsigned NOT NULL, 
@@ -101,37 +103,37 @@ CREATE TABLE systurno_mobile.Contiene (
 );
 
 /* 1 doctor entrega n receta */
-CREATE TABLE systurno_mobile.Entrega ( 
+CREATE TABLE Entrega ( 
   doctor_ci int(8) unsigned NOT NULL, 
   receta_id int(11) unsigned NOT NULL unique primary key
 ); 
 
 /* 1 usuario genera n turno */
-CREATE TABLE systurno_mobile.Genera ( 
+CREATE TABLE Genera ( 
   usuario_ci int(8) unsigned NOT NULL, 
   turno_id int(11) unsigned NOT NULL unique primary key
 ) ;
 
 /* 1 usuario inicia n sesion */
-CREATE TABLE systurno_mobile.Inicia ( 
+CREATE TABLE Inicia ( 
   usuario_ci int(8) unsigned NOT NULL, 
   sesion_id int(11) unsigned NOT NULL unique primary key
 );
 
 /* 1 usuario recibe n receta */
-CREATE TABLE systurno_mobile.Recibe ( 
+CREATE TABLE Recibe ( 
   usuario_ci int(8) unsigned NOT NULL, 
   receta_id int(11) unsigned NOT NULL unique primary key
 ); 
 
 /* 1 sesion requiere 1 token */
-CREATE TABLE systurno_mobile.Requiere(
+CREATE TABLE Requiere(
 	token_id int(11) unsigned NOT NULL unique,
 	sesion_id int(11) unsigned NOT NULL UNIQUE primary key
 );
 
 /* 1 usuario solicita n token */
-create table systurno_mobile.Solicita(
+create table Solicita(
    usuario_ci int(8) unsigned not null,
    token_id int(11) unsigned unique not null primary key
 );
