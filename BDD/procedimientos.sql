@@ -171,8 +171,77 @@ BEGIN
 	SET tkn_id = (SELECT id FROM Token WHERE valor = tkn_val);
 	
 	SET sesiones=(
-		SELECT count(*) FROM Inicia 
-		WHERE sesion_id = ssn_id AND
+		SELECT count(*) FROM Inicia INNER JOIN Sesion
+		WHERE Sesion.id = Inicia.sesion_id AND
+		sesion_id = ssn_id AND
+		Sesion.estado = 'abierta' AND
+		usuario_ci = usr_ci);
+	
+	SET tokens=(
+		SELECT count(*) FROM Solicita 
+		WHERE token_id = tkn_id AND
+		usuario_ci = usr_ci);
+	
+	SET vinculos=(
+		SELECT count(*) FROM Requiere 
+		WHERE token_id = tkn_id AND
+		sesion_id = ssn_id);
+	
+	SELECT sesiones,tokens,vinculos;
+END$$
+DELIMITER ;
+
+/* Cierra todas las sesiones abiertas de un usuario */
+DELIMITER $$
+CREATE DEFINER='systurno_mobile'@'localhost' 
+PROCEDURE cerrar_sesiones( 
+	IN usuario_ci int(8) unsigned
+)
+BEGIN
+	DECLARE usr_ci int(8) unsigned;
+	
+	SET usr_ci = usuario_ci;
+
+	UPDATE Sesion inner join Inicia
+		set estado = 'cerrada'
+		WHERE 
+		Sesion.id = Inicia.sesion_id AND
+		Sesion.estado = 'abierta' AND 
+		Inicia.usuario_ci = usr_ci;
+
+END$$
+DELIMITER ;
+
+
+
+/* Recupera los datos del perfil del usuario */
+DELIMITER $$
+CREATE DEFINER='systurno_mobile'@'localhost' 
+PROCEDURE buscar_datos_usuario( 
+	IN usuario_ci int(8) unsigned
+)
+BEGIN
+	DECLARE usr_ci int(8) unsigned;
+	DECLARE tkn_id int unsigned;
+	DECLARE tkn_val varchar(60);
+	DECLARE ssn_id int unsigned;
+	DECLARE ssn_val varchar(60);
+	DECLARE sesiones int;
+	DECLARE tokens int;
+	DECLARE vinculos int;
+	
+	SET usr_ci = usuario_ci;
+	SET tkn_val = token_val;
+	SET ssn_val = sesion_val;
+	
+	SET ssn_id = (SELECT id FROM Sesion WHERE valor = ssn_val);
+	SET tkn_id = (SELECT id FROM Token WHERE valor = tkn_val);
+	
+	SET sesiones=(
+		SELECT count(*) FROM Inicia INNER JOIN Sesion
+		WHERE Sesion.id = Inicia.sesion_id AND
+		sesion_id = ssn_id AND
+		Sesion.estado = 'abierta' AND
 		usuario_ci = usr_ci);
 	
 	SET tokens=(

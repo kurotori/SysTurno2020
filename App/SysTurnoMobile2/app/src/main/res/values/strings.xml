@@ -2,6 +2,7 @@
     <string name="app_name">SysTurno Móvil</string>
     <string name="action_settings">Settings</string>
     <string name="inicio_btn_preferencias">Preferencias</string>
+    <string name="menu_btn_cerrarSesion">Cerrar Sesión</string>
 
     <string name="login_Bienvenida_M">SysTurno</string>
     <string name="login_et_ci">C.I.:</string>

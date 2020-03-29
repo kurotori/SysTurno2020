@@ -37,7 +37,12 @@
         public $hash = "";
     }
 
- class SesionValida{
-     public $valida = "";
- }
+     class SesionValida{
+         public $valida = "";
+     }
+
+    class Confirmacion{
+        public estado = "";
+        public mensaje = "";
+    }
 ?>

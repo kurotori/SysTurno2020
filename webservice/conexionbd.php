@@ -257,6 +257,28 @@ function buscarDatosLoginUsuario($usuario_CI){
 
 
 
+    function cerrarSesiones($usuario_ci){
+        $resultado = false;
+         $conexion = GenerarConexion();
+        try{
+            // set the PDO error mode to exception
+            $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $consulta = "CALL cerrar_sesiones(:usuarioCi)";
+            $sentencia = $conexion->prepare($consulta);
+            $sentencia->bindParam(':usuarioCi', $usuario_ci);
+            
+            $sentencia->execute();
+            $resultado = true;
+        }
+        catch(PDOException $e){
+            echo "Error: " . $e->getMessage();
+        }
+
+        $conexion=null;
+        return $resultado;
+        
+    }
+
 
 
 

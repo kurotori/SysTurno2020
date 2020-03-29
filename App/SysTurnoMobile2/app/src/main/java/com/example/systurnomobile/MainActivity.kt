@@ -21,7 +21,7 @@ import kotlinx.android.synthetic.main.activity_main_original.*
 class MainActivity : AppCompatActivity() {
     //var servidor: String = ""
     var ipServidor:String=""
-    //var manejoURL:ManejoURL = ManejoURL()
+    var manejoURL:ManejoURL? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity() {
 
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this/*  Activity context */)
         ipServidor = sharedPreferences.getString("ipServidor","").toString()
-
+        manejoURL = ManejoURL(ipServidor)
 
     }
 
@@ -60,12 +60,15 @@ class MainActivity : AppCompatActivity() {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
+
+
         return when (item.itemId) {
-            R.id.action_settings -> {
+            R.id.menu_inicio_preferencias -> {
                 val intent: Intent = Intent(this, Preferencias::class.java)
                 startActivity(intent)
                 true
             }
+
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -90,9 +93,9 @@ class MainActivity : AppCompatActivity() {
         println(ciUsuario)
         var objRespuesta:Respuesta = Respuesta()
 
-        val manejoURL: ManejoURL = ManejoURL(ipServidor)
+        //val manejoURL: ManejoURL = ManejoURL(ipServidor)
         //obtenerToken inicia la sesión
-        manejoURL.obtenerToken(v,ciUsuario,contrasenia,objRespuesta,panelEspera)
+        manejoURL?.obtenerToken(v,ciUsuario,contrasenia,objRespuesta,panelEspera)
 
     }
 

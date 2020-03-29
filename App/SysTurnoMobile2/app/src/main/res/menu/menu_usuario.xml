@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menu_usuario_preferencias"
+        android:title="@string/inicio_btn_preferencias" />
+    <item
+        android:id="@+id/menu_usuario_cerrarSesion"
+        android:title="@string/menu_btn_cerrarSesion" />
+</menu>
