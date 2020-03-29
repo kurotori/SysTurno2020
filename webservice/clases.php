@@ -42,7 +42,7 @@
      }
 
     class Confirmacion{
-        public estado = "";
-        public mensaje = "";
+        public $estado = "";
+        public $mensaje = "";
     }
 ?>
