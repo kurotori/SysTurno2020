@@ -26,6 +26,16 @@
         return $objJSON;
     }
 
+    //Pasa un objeto a JSON
+    function ObjAJSON($objToken){
+        $jsonDatos = new stdClass;
+        $jsonDatos=array("Token"=>$objToken);
+        
+        $objJSON = json_encode($jsonDatos);
+
+        return $objJSON;
+    }
+
     //Pasa un objeto SesionValida a JSON
     function SesionValidaAJSON(SesionValida $objSV){
         $jsonDatos = new stdClass;

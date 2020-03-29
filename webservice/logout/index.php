@@ -32,6 +32,10 @@ if($_POST){
         $objJSON->estado = "ERROR";
         $objJSON->mensaje = "No_usuario_ci";
     }
+    
+    http_response_code(200);
+    $JSON_string = ObjAJSON($objJSON);//ObjAJSON($objJSON);
+    echo "$JSON_string";
         
     
 }
