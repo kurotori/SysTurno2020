@@ -8,7 +8,7 @@ import androidx.room.Query
 
 @Dao
 interface UsuarioDAO {
-    @Query("SELECT * FROM Usuario ORDER BY ciUsuario DESC LIMIT 1")
+    @Query("SELECT * FROM Usuario ORDER BY ci DESC LIMIT 1")
     fun verDatosUsuario():List<Usuario>
 
     @Insert

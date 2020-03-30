@@ -42,6 +42,9 @@ class PantallaInicial : AppCompatActivity() {
         }
         else{
             manejoURL.validarSesionInicio(this,usuario?.ci.toString(),sesion)
+            if (usuario != null) {
+                println(manejoURL.validarSesion(this,usuario,sesion))
+            }
         }
 
     }

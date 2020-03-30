@@ -181,8 +181,8 @@ class ManejoURL(ipServidor: String) {
     fun validarSesion(ctx: Context,
                       usuario:Usuario,
                       sesion: Sesion
-    ){
-
+    ):String{
+        var resultado: String="nada"
         var sesion_val = sesion.sesionVal
         var token_val = sesion.tokenVal
         var usuario_ci = usuario.ci
@@ -190,13 +190,21 @@ class ManejoURL(ipServidor: String) {
         val solicitud:Solicitud = Solicitud(
             urlValidarSesion.toString(),
             {
-
+                var respuesta = RespValidarSesion(it.toString())
+                resultado = respuesta.valida()
+                println("valor del resultado: "+resultado)
             },
             {
 
             }
         )
-        solicitud.POST()
+        solicitud.POST(
+            "usuario_ci" to usuario_ci,
+            "sesion_val" to sesion_val.toString(),
+            "token_val" to token_val.toString()
+        )
+
+        return resultado
     }
 
 

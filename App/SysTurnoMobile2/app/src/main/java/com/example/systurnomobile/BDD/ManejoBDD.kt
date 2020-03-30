@@ -139,9 +139,9 @@ class ManejoBDD {
 
             usuarios?.forEach {
                 var usr: Usuario = Usuario(
-                    ciUsuario = it.ciUsuario
+                    ci = it.ci
                 )
-                println("ci Usuario:"+it.ciUsuario)
+                println("ci Usuario:"+it.ci)
                 usuario = usr
             }
         }
