@@ -1,7 +1,7 @@
 package com.example.systurnomobile.BDD
 
 import android.content.Context
-import com.example.systurnomobile.Herramientas.Respuesta
+import com.example.systurnomobile.Herramientas.Respuestas.RespTokenYSesion
 import kotlin.concurrent.thread
 
 
@@ -15,7 +15,7 @@ class ManejoBDD {
      * Funcion de pruebas para guardar datos recibidos del servidor y leerlos
      * y corroborar así el correcto funcionamiento de la base local
      */
-    public fun guardarLeer(ctx:Context,respuesta:Respuesta):String{
+    public fun guardarLeer(ctx:Context,respuesta: RespTokenYSesion):String{
         var datos= ""
 
         val thread:Thread = thread(start = true){
@@ -67,7 +67,7 @@ class ManejoBDD {
         }
     }
 
-    fun guardarSesion(ctx:Context,respuesta: Respuesta){
+    fun guardarSesion(ctx:Context,respuesta: RespTokenYSesion){
         val thread:Thread = thread(start = true){
             //Guardado de datos en la BDD
             bdd = BaseDeDatos.obtenerBDD(ctx)
@@ -125,7 +125,8 @@ class ManejoBDD {
     }
 
     /**
-     * Lee la última sesión almacenada en la base de datos local
+     * Obtiene los datos del Usuario de la base de datos local,
+     * por ahora solamente el dato de su CI
      */
     fun leerCiUsuario(ctx: Context): Usuario? {
         var usuario:Usuario? = null

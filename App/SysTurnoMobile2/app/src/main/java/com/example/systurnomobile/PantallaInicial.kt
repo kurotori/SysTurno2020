@@ -6,15 +6,13 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import androidx.preference.PreferenceManager
 import com.example.systurnomobile.BDD.ManejoBDD
 import com.example.systurnomobile.BDD.Sesion
 import com.example.systurnomobile.BDD.Usuario
 import com.example.systurnomobile.Herramientas.ManejoURL
-import com.example.systurnomobile.Herramientas.RespValidarSesion
+import com.example.systurnomobile.Herramientas.Respuestas.RespValidarSesion
 import com.example.systurnomobile.Herramientas.Solicitud
-import kotlinx.android.synthetic.main.activity_pantalla_inicial.*
 
 class PantallaInicial : AppCompatActivity() {
 
@@ -43,9 +41,7 @@ class PantallaInicial : AppCompatActivity() {
             irAInicioSesion(this)
         }
         else{
-            //tv_pinicio_datos.text = manejoBDD.leerSesion(this)?.tokenVal
-            var objRespuesta:RespValidarSesion = RespValidarSesion()
-            manejoURL.validarSesion(this,usuario?.ciUsuario.toString(),sesion,objRespuesta)
+            manejoURL.validarSesion(this,usuario?.ciUsuario.toString(),sesion)
         }
 
     }

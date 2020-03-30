@@ -7,10 +7,18 @@ import java.lang.Exception
 
 class ManejoJSON {
 
+    /**
+     * Función de pruebas para comprobar la funcionalidad
+     * NO USAR
+     */
     public fun RecibirString(dato:String):String{
         return "Recibi esto: " + dato
     }
 
+    /**
+     * Función de pruebas para comprobar la funcionalidad
+     * NO USAR
+     */
     public fun SacarDatoJSON(stringJson:String):String{
         val gson:Gson = Gson()
         var resultado:String =""
@@ -19,6 +27,9 @@ class ManejoJSON {
         return resultado
     }
 
+    /**
+     * Permite extraer un dato específico de un objeto JSON, buscando mediante su clave
+     */
     public fun SacarDatoJSON(stringJson:String, objeto:String, clave:String):String{
         val gson:Gson = Gson()
         var resultado:String =""

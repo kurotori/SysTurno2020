@@ -1,49 +1,25 @@
 package com.example.systurnomobile.Herramientas
 
 import android.content.Context
-import android.content.DialogInterface
-import android.content.Intent
 import android.view.View
 import android.widget.RelativeLayout
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.preference.PreferenceManager
 import com.android.volley.Request
-import com.android.volley.RequestQueue
 import com.android.volley.Response
-import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.example.systurnomobile.BDD.BaseDeDatos
 import com.example.systurnomobile.BDD.ManejoBDD
 import com.example.systurnomobile.BDD.Sesion
-import com.example.systurnomobile.BDD.SesionDAO
-import com.example.systurnomobile.ManejoDeGUI
-import com.example.systurnomobile.MenuPrincipal
-import io.reactivex.Completable.fromCallable
-import io.reactivex.Flowable.fromCallable
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.newCoroutineContext
-import kotlinx.coroutines.runBlocking
-import org.json.JSONObject
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.io.OutputStreamWriter
-import java.net.HttpURLConnection
+import com.example.systurnomobile.Herramientas.Respuestas.RespTokenYSesion
+import com.example.systurnomobile.Herramientas.Respuestas.RespValidarSesion
 import java.net.URL
-import java.net.URLEncoder
-import java.util.*
-import kotlin.concurrent.thread
-import kotlin.coroutines.*
 
 class ManejoURL(ipServidor: String) {
 
     //public var ipServidor=""
     private val manejoBDD:ManejoBDD = ManejoBDD()
-    private val manejoDeGUI:ManejoDeGUI = ManejoDeGUI()
+    private val manejoDeGUI: ManejoDeGUI =
+        ManejoDeGUI()
 
     //private val servidor:String = "http://"+ipServidor+"/SysTurno2020/"
     private val servidor:String = "http://"+ipServidor+"/"
@@ -57,6 +33,7 @@ class ManejoURL(ipServidor: String) {
 
     /**
      * Función de prueba para comprobar acceso a los datos del servidor
+     * NO USAR
      */
     public fun leerPrueba(ctx:Context, tv_destino: TextView){
         val queue = Volley.newRequestQueue(ctx)
@@ -77,28 +54,26 @@ class ManejoURL(ipServidor: String) {
     /**
      * Solicita un token al servidor e intenta iniciar sesión con el mismo
      */
-    public fun obtenerToken(v:View,//ctx:Context,
+    public fun obtenerToken(v:View,
                             ciUsuario: String,
-                           contrasenia:String,
-                            respuesta: Respuesta,
+                            contrasenia:String,
                             panelEspera: RelativeLayout
     ){
         val solicitud:Solicitud = Solicitud(urlLogin.toString(),
             {
-                respuesta.respuesta = it.toString()
-
+                var respuesta:RespTokenYSesion = RespTokenYSesion(it.toString())
                 iniciarSesion(
                     v,
                     ciUsuario,
                     contrasenia,
                     respuesta.tokenVal(),
-                    respuesta.tokenId(),
-                    respuesta
+                    respuesta.tokenId()
                 )
-
+                //Oculta el panel con la animación de espera
+                //TODO: Reemplazar el panel de espera con un DIALOG
                 panelEspera.visibility = View.GONE
             },{
-                println(it.toString())//tv_destino.text = it.toString()
+                println(it.toString())
             })
         solicitud.POST("usuario_ci" to ciUsuario)
     }
@@ -107,19 +82,17 @@ class ManejoURL(ipServidor: String) {
     /**
      * Genera el proceso de iniciar sesión en el servidor
      */
-    public fun iniciarSesion(v:View,//ctx:Context,
+    public fun iniciarSesion(v:View,
                             ciUsuario: String,
                             contrasenia: String,
                              token_val:String,
-                             token_id:String,
-                            respuesta: Respuesta
+                             token_id:String
     ){
 
         val solicitud:Solicitud = Solicitud(urlLogin.toString(),
             {
                 val ctx = v.context
-                respuesta.respuesta = it.toString()
-
+                var respuesta: RespTokenYSesion = RespTokenYSesion(it.toString())
                 println("tipo: "+respuesta.tipo())
                 println("mensaje: "+respuesta.mensaje())
                 println("token ID: "+respuesta.tokenId())
@@ -134,17 +107,9 @@ class ManejoURL(ipServidor: String) {
                     // por ahora solo la CI
                     var ciUsr: Int = ciUsuario.toInt()
                     manejoBDD.guardarCiUsuario(ctx,ciUsr)
-                    //Pasaje al menú principal
+                    //La aplicación pasa al menú principal
                     manejoDeGUI.irAMenuPrincipal(v)
-                    /*val intent: Intent = Intent(ctx,MenuPrincipal::class.java)
-
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    intent.putExtra("EXIT", true)
-                    ContextCompat.startActivity(ctx,intent,null)*/
                 }
-
 
             },{
                 println(it.toString())//tv_destino.text = it.toString()
@@ -158,16 +123,17 @@ class ManejoURL(ipServidor: String) {
     }
 
     /**
-     * Permite analizar la respuesta recibida del servidor.
+     * Permite analizar la respuesta recibida del servidor
+     * al solicitar un TOKEN o una SESION.
      * Devuelve 'false' si la respuesta tiene tipo 'ERROR'
      * de lo contrario devuelve 'true'
      */
-    fun analizarRespuesta(respuesta:Respuesta, ctx: Context):Boolean{
+    fun analizarRespuesta(respuesta: RespTokenYSesion, ctx: Context):Boolean{
         var resultado:Boolean = false
 
         if (respuesta.tipo().equals("ERROR")){
             resultado = false
-            val adv = mostrarAdvertencia(respuesta.tipo(),respuesta.mensaje(),ctx)
+            val adv = manejoDeGUI.mostrarAdvertencia(respuesta.tipo(),respuesta.mensaje(),ctx)
             adv?.show()
         }
         else{
@@ -177,12 +143,11 @@ class ManejoURL(ipServidor: String) {
     }
 
     /**
-     * Solicita una vlaidación de sesión guardado
+     * Solicita al servidor una validación de una sesión guardada en la base local
      */
-    fun validarSesion(ctx:Context,//v:View,
+    fun validarSesion(ctx:Context,
                       usuarioCi: String,
-                      sesion:Sesion,
-                      respuesta: RespValidarSesion
+                      sesion:Sesion
     ){
         var sesion_val:String = sesion.sesionVal.toString()
         var token_val:String = sesion.tokenVal.toString()
@@ -190,8 +155,7 @@ class ManejoURL(ipServidor: String) {
         val solicitud: Solicitud= Solicitud(
             urlValidarSesion.toString(),
             {
-                //val ctx = v.context
-                respuesta.respuesta = it.toString()
+                var respuesta: RespValidarSesion = RespValidarSesion(it.toString())
                 println("-RR->"+respuesta.respuesta)
                 println("-R->"+respuesta.valida())
 
@@ -203,7 +167,9 @@ class ManejoURL(ipServidor: String) {
                 }
 
             },
-            {}
+            {
+                println(it.toString())
+            }
         )
         solicitud.POST(
             "usuario_ci" to usuarioCi,
@@ -218,26 +184,7 @@ class ManejoURL(ipServidor: String) {
 
 
 
-    /**
-     * Permite generar un diálogo con advertencia en la pantalla
-     */
-    fun mostrarAdvertencia(titulo: String, mensaje:String, ctx:Context): AlertDialog? {
-        val constr: AlertDialog.Builder = ctx?.let{
-            AlertDialog.Builder(it)
-        }
-        constr.apply {
-            setPositiveButton("Aceptar",
-                DialogInterface.OnClickListener { dialog, id ->
-                    // Este dialogo solo muestra una advertencia, que se establece con el mensaje
-                })
-        }
 
-        constr.setMessage(mensaje)
-            .setTitle(titulo)
-
-        val dialogo: AlertDialog? = constr.create()
-        return dialogo
-    }
 
 
 }

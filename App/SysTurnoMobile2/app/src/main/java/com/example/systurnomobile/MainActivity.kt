@@ -12,7 +12,7 @@ import androidx.preference.PreferenceManager
 import com.example.systurnomobile.BDD.ManejoBDD
 import com.example.systurnomobile.Herramientas.ManejoPreferencias
 import com.example.systurnomobile.Herramientas.ManejoURL
-import com.example.systurnomobile.Herramientas.Respuesta
+import com.example.systurnomobile.Herramientas.Respuestas.RespTokenYSesion
 import com.example.systurnomobile.Herramientas.Solicitud
 import kotlinx.android.synthetic.main.inicio.*
 
@@ -61,7 +61,6 @@ class MainActivity : AppCompatActivity() {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
 
-
         return when (item.itemId) {
             R.id.menu_inicio_preferencias -> {
                 val intent: Intent = Intent(this, Preferencias::class.java)
@@ -87,16 +86,11 @@ class MainActivity : AppCompatActivity() {
     fun iniciarSesion(v: View){
         v.hideKeyboard()
         panelEspera.visibility = View.VISIBLE
-        ipServidor = ManejoPreferencias(this).obtenerServidor()
+
         val ciUsuario:String = et_InicioCiUsuario.text.toString()
         val contrasenia:String = et_InicioContrasenia.text.toString()
-        println(ciUsuario)
-        var objRespuesta:Respuesta = Respuesta()
-
-        //val manejoURL: ManejoURL = ManejoURL(ipServidor)
         //obtenerToken inicia la sesión
-        manejoURL?.obtenerToken(v,ciUsuario,contrasenia,objRespuesta,panelEspera)
-
+        manejoURL?.obtenerToken(v,ciUsuario,contrasenia,panelEspera)
     }
 
     fun irAMenuPrincipal(v:View){
@@ -110,6 +104,5 @@ class MainActivity : AppCompatActivity() {
 
     fun salir(v:View){
         finishAffinity()
-        //this.finish()
     }
 }
