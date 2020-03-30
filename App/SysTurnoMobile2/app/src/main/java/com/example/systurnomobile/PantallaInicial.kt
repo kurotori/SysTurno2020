@@ -41,7 +41,7 @@ class PantallaInicial : AppCompatActivity() {
             irAInicioSesion(this)
         }
         else{
-            manejoURL.validarSesion(this,usuario?.ciUsuario.toString(),sesion)
+            manejoURL.validarSesionInicio(this,usuario?.ci.toString(),sesion)
         }
 
     }

@@ -10,6 +10,7 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.systurnomobile.BDD.ManejoBDD
 import com.example.systurnomobile.BDD.Sesion
+import com.example.systurnomobile.BDD.Usuario
 import com.example.systurnomobile.Herramientas.Respuestas.RespTokenYSesion
 import com.example.systurnomobile.Herramientas.Respuestas.RespValidarSesion
 import java.net.URL
@@ -24,9 +25,10 @@ class ManejoURL(ipServidor: String) {
     //private val servidor:String = "http://"+ipServidor+"/SysTurno2020/"
     private val servidor:String = "http://"+ipServidor+"/"
 
-    public val urlPruebas: URL = URL(servidor+"pruebajson/")
-    public val urlLogin:URL = URL(servidor+"login/")
+    val urlPruebas: URL = URL(servidor+"pruebajson/")
+    val urlLogin:URL = URL(servidor+"login/")
     val urlValidarSesion:URL = URL(servidor+"validarSesion/")
+    val urlLogout: URL = URL(servidor+"logout/")
 
     private val manejoJSON:ManejoJSON = ManejoJSON()
 
@@ -144,8 +146,9 @@ class ManejoURL(ipServidor: String) {
 
     /**
      * Solicita al servidor una validación de una sesión guardada en la base local
+     * al inicio
      */
-    fun validarSesion(ctx:Context,
+    fun validarSesionInicio(ctx:Context,
                       usuarioCi: String,
                       sesion:Sesion
     ){
@@ -156,8 +159,6 @@ class ManejoURL(ipServidor: String) {
             urlValidarSesion.toString(),
             {
                 var respuesta: RespValidarSesion = RespValidarSesion(it.toString())
-                println("-RR->"+respuesta.respuesta)
-                println("-R->"+respuesta.valida())
 
                 if (respuesta.valida().equals("true")){
                     manejoDeGUI.irAMenuPrincipal(ctx)
@@ -165,7 +166,6 @@ class ManejoURL(ipServidor: String) {
                 else{
                     manejoDeGUI.irAIniciarSesion(ctx)
                 }
-
             },
             {
                 println(it.toString())
@@ -178,9 +178,29 @@ class ManejoURL(ipServidor: String) {
         )
     }
 
+    fun validarSesion(ctx: Context,
+                      usuario:Usuario,
+                      sesion: Sesion
+    ){
+
+        var sesion_val = sesion.sesionVal
+        var token_val = sesion.tokenVal
+        var usuario_ci = usuario.ci
+
+        val solicitud:Solicitud = Solicitud(
+            urlValidarSesion.toString(),
+            {
+
+            },
+            {
+
+            }
+        )
+        solicitud.POST()
+    }
 
 
-
+    //fun cerrarSesion()
 
 
 

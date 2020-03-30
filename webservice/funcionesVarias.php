@@ -27,12 +27,11 @@
     }
 
     //Pasa un objeto a JSON
-    function ObjAJSON($objToken){
+    function ObjAJSON($objeto){
         $jsonDatos = new stdClass;
-        $jsonDatos=array("Token"=>$objToken);
-        
+        $nombreClase = get_class($objeto);
+        $jsonDatos=array("$nombreClase"=>$objeto);
         $objJSON = json_encode($jsonDatos);
-
         return $objJSON;
     }
 
