@@ -11,4 +11,7 @@ import androidx.room.Query
 
         @Insert
         fun nuevaSesion(sesion: Sesion)
+
+        @Query("DELETE FROM Sesion")
+        fun borrarTodasLasSesiones()
     }

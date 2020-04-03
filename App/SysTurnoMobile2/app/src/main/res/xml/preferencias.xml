@@ -4,12 +4,13 @@
         <PreferenceCategory android:title="Datos del Servidor">
 
                 <EditTextPreference
-                    android:defaultValue="0.0.0.0"
                     android:dependency=""
                     android:key="ipServidor"
                     android:selectAllOnFocus="true"
                     android:singleLine="true"
                     android:title="IP del Servidor"
+                    app:defaultValue="systurno-movil.000webhostapp.com"
+                    android:defaultValue="systurno-movil.000webhostapp.com"
                     app:useSimpleSummaryProvider="true" />
 
 

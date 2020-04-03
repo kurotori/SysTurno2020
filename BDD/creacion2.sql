@@ -53,7 +53,7 @@ CREATE TABLE Perfil(
 	nombre varchar(30) NOT NULL, 
 	apellido varchar(30) NOT NULL, 
 	telefono varchar(12) NOT NULL, 
-	direccion varchar(40) NOT NULL,
+	direccion varchar(60) NOT NULL,
 	email varchar(45) NOT NULL,
 	recibeSMS enum('si','no') NOT NULL default 'si',
 	recibeEmail enum('si','no') NOT NULL default 'si'

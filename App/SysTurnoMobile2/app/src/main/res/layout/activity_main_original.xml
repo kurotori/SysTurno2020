@@ -42,7 +42,7 @@
             android:layout_weight="19">
 
             <include
-                layout="@layout/inicio"
+                layout="@layout/iniciar_sesion"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="bottom"

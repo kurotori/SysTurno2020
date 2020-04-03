@@ -80,7 +80,7 @@ class ManejoDeGUI {
         constr.apply {
             setPositiveButton("Aceptar",
                 DialogInterface.OnClickListener { dialog, id ->
-                    // Este dialogo solo muestra una advertencia, que se establece con el mensaje
+                    // Este dialogo solo muestra una advertencia, que se establece con el parámetro 'mensaje'
                 })
         }
 
@@ -90,5 +90,71 @@ class ManejoDeGUI {
         val dialogo: AlertDialog? = constr.create()
         return dialogo
     }
+
+    /**
+     * Permite generar un diálogo con advertencia en la pantalla
+     * y acepta una acción que se realizará al presionar el botón 'Aceptar'
+     */
+    fun mostrarAdvertencia(titulo: String,
+                           mensaje:String,
+                           ctx:Context,
+                           accion:()->Unit
+    ): AlertDialog? {
+        val constr: AlertDialog.Builder = ctx?.let{
+            AlertDialog.Builder(it)
+        }
+        constr.apply {
+            setPositiveButton("Aceptar",
+                DialogInterface.OnClickListener { dialog, id ->
+                    accion()
+                })
+        }
+
+        constr.setMessage(mensaje)
+            .setTitle(titulo)
+
+        val dialogo: AlertDialog? = constr.create()
+        return dialogo
+    }
+
+    /**
+     * Permite generar un diálogo con pregunta en la pantalla
+     * y acepta dos acciónes que se realizarán al presionar el botón 'Aceptar'
+     * o el botón 'Cancelar'
+     * @param titulo El título de la ventana de diálogo
+     * @param mensaje El mensaje para el usuario
+     * @param ctx El contexto de la actividad donde se mostrará el diálogo
+     * @param accionSi Acción a tomar si el usuario presiona en 'Aceptar'
+     * @param accionNo Acción a tomar si el usuario presiona en 'Cancelar'
+     */
+    fun mostrarDialogoPregunta(titulo: String,
+                           mensaje:String,
+                           ctx:Context,
+                           accionSi:()->Unit,
+                           accionNo:()->Unit
+    ): AlertDialog? {
+        val constr: AlertDialog.Builder = ctx?.let{
+            AlertDialog.Builder(it)
+        }
+        constr.apply {
+            setPositiveButton("Aceptar",
+                DialogInterface.OnClickListener { dialog, id ->
+                    accionSi()
+                })
+        }
+        constr.apply {
+            setNegativeButton("Cancelar",
+                DialogInterface.OnClickListener {dialog, id->
+                    accionNo()
+                })
+        }
+
+        constr.setMessage(mensaje)
+            .setTitle(titulo)
+
+        val dialogo: AlertDialog? = constr.create()
+        return dialogo
+    }
+
 
 }

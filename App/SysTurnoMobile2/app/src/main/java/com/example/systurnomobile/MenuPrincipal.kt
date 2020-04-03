@@ -1,17 +1,44 @@
 package com.example.systurnomobile
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.preference.PreferenceManager
+import com.example.systurnomobile.BDD.ManejoBDD
+import com.example.systurnomobile.BDD.Sesion
+import com.example.systurnomobile.BDD.Usuario
+import com.example.systurnomobile.Herramientas.ManejoDeGUI
+import com.example.systurnomobile.Herramientas.ManejoURL
+import com.example.systurnomobile.Herramientas.Solicitud
 
 class MenuPrincipal : AppCompatActivity() {
+
+    val manejoBDD = ManejoBDD()
+    var manejoURL:ManejoURL? = null
+    var usuario: Usuario? = null
+    var sesion: Sesion? = null
+    val manejoDeGUI = ManejoDeGUI()
+    var ctx: Context? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.menu_principal2)
+
+        ctx = this
+        //IMPORTANTE: Se inicializa la clase para manejar las solicitudes
+        Solicitud.init(this)
+
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this/*  Activity context */)
+        var ipServidor = sharedPreferences.getString("ipServidor","").toString()
+
+        manejoURL = ManejoURL(ipServidor)
+        usuario = manejoBDD.leerCiUsuario(this)
+        sesion = manejoBDD.leerSesion(this)
+
     }
 
 
@@ -34,7 +61,28 @@ class MenuPrincipal : AppCompatActivity() {
                 true
             }
             R.id.menu_usuario_cerrarSesion ->{
-
+                usuario?.let {
+                    sesion?.let { it1 ->
+                        /*var dialogo = manejoDeGUI.mostrarDialogoPregunta(
+                            "Cerrar Sesión",
+                            "Va a cerrar sesión en SysTurno\n¿Desea continuar?",
+                            this.applicationContext,
+                            {},//manejoURL?.cerrarSesion(this, it, it1) },
+                            {}
+                        )
+                        dialogo?.show()
+                         */
+                        var dialogo = ctx?.let { it2 ->
+                            manejoDeGUI.mostrarDialogoPregunta(
+                                "Cerrar Sesión",
+                                "Va a cerrar sesión en SysTurno\n¿Desea continuar?",
+                                it2,
+                                {manejoURL?.cerrarSesion(it2,it,it1)},
+                                {})
+                        }
+                        dialogo?.show()
+                    }
+                }
                 true
             }
             else -> super.onOptionsItemSelected(item)

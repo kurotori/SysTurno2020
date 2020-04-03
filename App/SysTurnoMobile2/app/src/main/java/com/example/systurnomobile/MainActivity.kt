@@ -14,12 +14,11 @@ import com.example.systurnomobile.Herramientas.ManejoPreferencias
 import com.example.systurnomobile.Herramientas.ManejoURL
 import com.example.systurnomobile.Herramientas.Respuestas.RespTokenYSesion
 import com.example.systurnomobile.Herramientas.Solicitud
-import kotlinx.android.synthetic.main.inicio.*
+import kotlinx.android.synthetic.main.iniciar_sesion.*
 
 import kotlinx.android.synthetic.main.activity_main_original.*
 
 class MainActivity : AppCompatActivity() {
-    //var servidor: String = ""
     var ipServidor:String=""
     var manejoURL:ManejoURL? = null
 
@@ -33,14 +32,8 @@ class MainActivity : AppCompatActivity() {
 
         val manejoBDD = ManejoBDD()
         manejoBDD.borrarUsuarios(this)
+        manejoBDD.borrarSesiones(this)
 
-
-
-       /* //fab se refiere al botón flotante en la interfáz
-        fab.setOnClickListener { view ->
-           Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-        }*/
 
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this/*  Activity context */)
         ipServidor = sharedPreferences.getString("ipServidor","").toString()
@@ -99,7 +92,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun irARegistro(v:View){
-
+        val intent = Intent(v.context,Registro::class.java)
+        startActivity(intent)
     }
 
     fun salir(v:View){

@@ -48,6 +48,7 @@
     //Comprueba la identidad del usuario y si es válido, 
     //registra y entrega objeto conteniendo un token de acceso al sistema
     function generarToken($usuario_ci){
+        //Chequea la existencia del usuario en el servidor
         $chequeo = chequearUsuario($usuario_ci);
         
         $tiempoUnix = time();

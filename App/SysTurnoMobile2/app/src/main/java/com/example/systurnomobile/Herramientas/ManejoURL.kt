@@ -11,6 +11,8 @@ import com.android.volley.toolbox.Volley
 import com.example.systurnomobile.BDD.ManejoBDD
 import com.example.systurnomobile.BDD.Sesion
 import com.example.systurnomobile.BDD.Usuario
+import com.example.systurnomobile.Herramientas.Respuestas.RespLogout
+import com.example.systurnomobile.Herramientas.Respuestas.RespRegistro
 import com.example.systurnomobile.Herramientas.Respuestas.RespTokenYSesion
 import com.example.systurnomobile.Herramientas.Respuestas.RespValidarSesion
 import java.net.URL
@@ -23,12 +25,14 @@ class ManejoURL(ipServidor: String) {
         ManejoDeGUI()
 
     //private val servidor:String = "http://"+ipServidor+"/SysTurno2020/"
-    private val servidor:String = "http://"+ipServidor+"/"
+    private val servidor:String = "https://"+ipServidor+"/"
 
     val urlPruebas: URL = URL(servidor+"pruebajson/")
     val urlLogin:URL = URL(servidor+"login/")
     val urlValidarSesion:URL = URL(servidor+"validarSesion/")
     val urlLogout: URL = URL(servidor+"logout/")
+    val urlBuscar: URL = URL(servidor+"buscar/")
+    val urlRegistro: URL = URL(servidor+"registro/")
 
     private val manejoJSON:ManejoJSON = ManejoJSON()
 
@@ -146,12 +150,13 @@ class ManejoURL(ipServidor: String) {
 
     /**
      * Solicita al servidor una validación de una sesión guardada en la base local
-     * al inicio
+     * al iniciar_sesion
      */
     fun validarSesionInicio(ctx:Context,
-                      usuarioCi: String,
+                      usuario:Usuario,
                       sesion:Sesion
     ){
+        var usuario_ci = usuario.ci
         var sesion_val:String = sesion.sesionVal.toString()
         var token_val:String = sesion.tokenVal.toString()
 
@@ -159,7 +164,7 @@ class ManejoURL(ipServidor: String) {
             urlValidarSesion.toString(),
             {
                 var respuesta: RespValidarSesion = RespValidarSesion(it.toString())
-
+                println("Estado de la sesion:"+respuesta.valida())
                 if (respuesta.valida().equals("true")){
                     manejoDeGUI.irAMenuPrincipal(ctx)
                 }
@@ -172,30 +177,35 @@ class ManejoURL(ipServidor: String) {
             }
         )
         solicitud.POST(
-            "usuario_ci" to usuarioCi,
+            "usuario_ci" to usuario_ci,
             "sesion_val" to sesion_val,
             "token_val" to token_val
         )
     }
 
-    fun validarSesion(ctx: Context,
+    fun validarAccion(ctx: Context,
                       usuario:Usuario,
-                      sesion: Sesion
-    ):String{
-        var resultado: String="nada"
+                      sesion: Sesion,
+                      accion:()->Unit
+    ){
+
         var sesion_val = sesion.sesionVal
         var token_val = sesion.tokenVal
         var usuario_ci = usuario.ci
 
-        val solicitud:Solicitud = Solicitud(
+        val solicitud = Solicitud(
             urlValidarSesion.toString(),
             {
                 var respuesta = RespValidarSesion(it.toString())
-                resultado = respuesta.valida()
-                println("valor del resultado: "+resultado)
+                if(respuesta.valida().equals("true")){
+                    accion()
+                }
+                else{
+                    manejoDeGUI.mostrarAdvertencia("ERROR","Error Interno de la app",ctx)
+                }
             },
             {
-
+                println(it.toString())
             }
         )
         solicitud.POST(
@@ -203,12 +213,97 @@ class ManejoURL(ipServidor: String) {
             "sesion_val" to sesion_val.toString(),
             "token_val" to token_val.toString()
         )
-
-        return resultado
     }
 
 
-    //fun cerrarSesion()
+    fun cerrarSesion(ctx: Context,
+                     usuario: Usuario,
+                     sesion: Sesion
+    ){
+        var sesion_val = sesion.sesionVal
+        var token_val = sesion.tokenVal
+        var usuario_ci = usuario.ci
+        validarAccion(ctx,usuario,sesion
+        ) {
+            val solicitud = Solicitud(
+                urlLogout.toString(),
+                {
+                    var respuesta = RespLogout(it.toString())
+                    var dialogo =
+                        manejoDeGUI.mostrarAdvertencia("Notificación",respuesta.mensaje(),ctx){
+                            manejoDeGUI.irAIniciarSesion(ctx)
+                        }
+                    if(respuesta.estado().equals("OK")){
+                        dialogo?.show()
+                    }
+                    else{
+                        dialogo?.show()
+                    }
+                },
+                {
+                    println(it.toString())
+                }
+            ).POST(
+                "usuario_ci" to usuario_ci,
+                "sesion_val" to sesion_val.toString(),
+                "token_val" to token_val.toString()
+            )
+        }
+    }
+
+
+    /***
+     * Permite iniciar el proceso de registrar a un usuario en el sistema
+     */
+    fun registrarUsuario(ctx: Context,
+                         usuario: Usuario,
+                         contrasenia:String
+                         ){
+        var usuario_ci = usuario.ci.toString()
+        var nombre = usuario.nombre
+        var apellido = usuario.apellido
+        var direccion = usuario.direccion
+        var telefono = usuario.telefono
+        var email = usuario.email
+
+        //1era solicitud: token
+        val solicitud = Solicitud(
+            urlRegistro.toString(),
+            {
+                var respuesta:RespTokenYSesion = RespTokenYSesion(it.toString())
+                var token_val = respuesta.tokenVal()
+                var token_id = respuesta.tokenId()
+
+                //2da solicitud: registro
+                val solicitud = Solicitud(
+                    urlRegistro.toString(),
+                    {
+                        var respuesta:RespRegistro = RespRegistro(it.toString())
+                        manejoDeGUI.mostrarAdvertencia(respuesta.estado(),respuesta.mensaje(),ctx)?.show()
+                    },
+                    {}
+                )
+                solicitud.POST(
+                    "usuario_ci" to usuario_ci,
+                    "token_val" to token_val,
+                    "token_id" to token_id,
+                    "nombre" to nombre.toString(),
+                    "apellido" to apellido.toString(),
+                    "direccion" to direccion.toString(),
+                    "telefono" to telefono.toString(),
+                    "email" to email.toString(),
+                    "contrasenia" to contrasenia
+                )
+            },
+            {
+
+            }
+        )
+        solicitud.POST(
+            "usuario_ci" to usuario_ci
+        )
+
+    }
 
 
 

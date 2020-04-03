@@ -164,4 +164,17 @@ class ManejoBDD {
         thread.join()
     }
 
+    /**
+     * Borra todos los datos de Sesion de la base local
+     */
+    fun borrarSesiones(ctx: Context){
+        val thread:Thread = thread(start = true) {
+            bdd = BaseDeDatos.obtenerBDD(ctx)
+            sesionDAO = bdd?.sesionDao()
+
+            sesionDAO?.borrarTodasLasSesiones()
+        }
+        thread.join()
+    }
+
 }

@@ -22,9 +22,6 @@ class PantallaInicial : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.pantalla_inicio)
-        //setSupportActionBar(tb_Inicio_BarraHerramientas)
-
-        //setContentView(R.layout.activity_pantalla_inicial)
 
         //IMPORTANTE: Se inicializa la clase para manejar las solicitudes
         Solicitud.init(this)
@@ -35,15 +32,23 @@ class PantallaInicial : AppCompatActivity() {
         val manejoURL = ManejoURL(ipServidor)
 
         var sesion: Sesion? = manejoBDD.leerSesion(this)
+        println("Lei la sesion")
         var usuario:Usuario? = manejoBDD.leerCiUsuario(this)
+        println("lei el usuario")
 
         if (sesion == null){
+            println("no hay sesion")
             irAInicioSesion(this)
         }
         else{
-            manejoURL.validarSesionInicio(this,usuario?.ci.toString(),sesion)
+            println("hay sesion")
             if (usuario != null) {
-                println(manejoURL.validarSesion(this,usuario,sesion))
+                println("hay usuario")
+                manejoURL.validarSesionInicio(this,usuario,sesion)
+            }
+            else{
+                println("no hay usuario")
+                irAInicioSesion(this)
             }
         }
 

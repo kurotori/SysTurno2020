@@ -22,7 +22,7 @@ include_once "funcionesVarias.php";
         try{
             // set the PDO error mode to exception
             $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $consulta = "SELECT count(*) FROM usuario WHERE CI = :ci_usuario";
+            $consulta = "SELECT count(*) FROM Usuario WHERE CI = :ci_usuario";
             $sentencia = $conexion->prepare($consulta);
             $sentencia->bindParam(':ci_usuario', $ci_usuario);
             
@@ -160,7 +160,7 @@ function buscarDatosLoginUsuario($usuario_CI){
         try{
             // set the PDO error mode to exception
             $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $consulta = "SELECT ci,hash FROM usuario WHERE ci = :usuario_ci";
+            $consulta = "SELECT ci,hash FROM Usuario WHERE ci = :usuario_ci";
             $sentencia = $conexion->prepare($consulta);
             $sentencia->bindParam(':usuario_ci', $usuario_CI);
             
@@ -182,6 +182,7 @@ function buscarDatosLoginUsuario($usuario_CI){
     
     //Registra un usuario en la BdD a partir de un objeto con los datos
     function registrarUsuario(DatosUsuario $datosUsuario){
+        $resultado = "";
         $conexion = GenerarConexion();
         try{
             // set the PDO error mode to exception
@@ -197,13 +198,14 @@ function buscarDatosLoginUsuario($usuario_CI){
             $sentencia->bindParam(':email', $datosUsuario->email);
             
             $sentencia->execute();
-            echo "OK";
+            $resultado = "Usuario ".$datosUsuario->usuario_CI." registrado con éxito";
         }
         catch(PDOException $e){
-            echo "Error: " . $e->getMessage();
+            $resultado = "Error: " . $e->getMessage();
         }
 
         $conexion=null;
+        return $resultado;
     
     }
     
