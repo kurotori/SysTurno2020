@@ -129,36 +129,19 @@
     // 4 - su valor alfanumérico es el mismo que el almacenado en el servidor
     //Provisoriamente se establece que un token es válido durante 1 minuto.    
     function validarToken($obj_token,$usuario_CI){
-        //$minutosValidez = 10;
         $resultado = false;
         $token_ID = $obj_token->token_ID;
         
         $datosToken = new DatosToken();
         $datosToken = buscarDatosToken($token_ID);
-        //echo $datosToken->token_Val;
-        //1 - Chequeo del estado
-        //if ($datosToken->estado == 'activo'){
-            //echo "token activo ok|";
-            //2 - Chequeo de registro del token
-            if( strcmp($datosToken->usuario_CI,$usuario_CI) == 0 ){
-                //echo "usuario ok|";
-                //3 - Chequeo de expiración
-                //$marcaTiempo = new DateTime($datosToken->marcaTiempo);
-                    //date( 'd m Y H i',strtotime($datosToken->marcaTiempo) );
-                //$ahora = new DateTime('now');
-                //$diferencia = $ahora->diff($marcaTiempo)->format('%i');
-                    //date_diff($marcaTiempo,$ahora)->format('%i');
-                
-                //if( ($minutosValidez-$diferencia)>0 ){
-                    //echo "tiempo ok|";
-                    //Chequeo de valor alfanumérico
-                    if(strcmp($obj_token->token_Val,$datosToken->token_Val)==0){
-                        //echo "val ok";
-                        $resultado = true;
-                    }
-               // }
+
+        if( strcmp($datosToken->usuario_CI,$usuario_CI) == 0 ){
+                //Chequeo de valor alfanumérico
+            if(strcmp($obj_token->token_Val,$datosToken->token_Val)==0){
+                    //echo "val ok";
+                $resultado = true;
             }
-        //}
+        }
         return $resultado;
     }
 

@@ -4,6 +4,9 @@ import android.content.Context
 import android.view.View
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
@@ -11,10 +14,8 @@ import com.android.volley.toolbox.Volley
 import com.example.systurnomobile.BDD.ManejoBDD
 import com.example.systurnomobile.BDD.Sesion
 import com.example.systurnomobile.BDD.Usuario
-import com.example.systurnomobile.Herramientas.Respuestas.RespLogout
-import com.example.systurnomobile.Herramientas.Respuestas.RespRegistro
-import com.example.systurnomobile.Herramientas.Respuestas.RespTokenYSesion
-import com.example.systurnomobile.Herramientas.Respuestas.RespValidarSesion
+import com.example.systurnomobile.Fragmentos.DialogoEspera
+import com.example.systurnomobile.Herramientas.Respuestas.*
 import java.net.URL
 
 class ManejoURL(ipServidor: String) {
@@ -60,73 +61,57 @@ class ManejoURL(ipServidor: String) {
     /**
      * Solicita un token al servidor e intenta iniciar sesión con el mismo
      */
-    public fun obtenerToken(v:View,
+    public fun iniciarSesion(v:View,
                             ciUsuario: String,
-                            contrasenia:String,
-                            panelEspera: RelativeLayout
+                            contrasenia:String
     ){
+        val ctx = v.context
+        //Se muestra el diálogo de espera
+        var dialogo = manejoDeGUI.mostrarDialogoEspera(ctx)
+        dialogo?.show()
+        //1era Solicitud: token
         val solicitud:Solicitud = Solicitud(urlLogin.toString(),
             {
                 var respuesta:RespTokenYSesion = RespTokenYSesion(it.toString())
-                iniciarSesion(
-                    v,
-                    ciUsuario,
-                    contrasenia,
-                    respuesta.tokenVal(),
-                    respuesta.tokenId()
+                //2da solicitud: inicio de sesión
+                val solicitudIS = Solicitud(
+                    urlLogin.toString(),
+                    {
+                        val ctx = v.context
+                        var respuesta: RespTokenYSesion = RespTokenYSesion(it.toString())
+                        println("tipo: "+respuesta.tipo())
+                        println("mensaje: "+respuesta.mensaje())
+                        println("token ID: "+respuesta.tokenId())
+                        println("token Val: "+respuesta.tokenVal())
+                        println("sesion ID: "+respuesta.sesionId())
+                        println("sesion Val: "+respuesta.sesionVal())
+                        //Oculta el panel con la animación de espera
+                        dialogo?.dismiss()
+                        if(analizarRespuesta(respuesta,ctx)){
+                            //Guarda los datos de sesión en la base de datos local
+                            manejoBDD.guardarSesion(ctx, respuesta)
+                            //Guarda los datos del Usuario en la base de datos local
+                            // por ahora solo la CI
+                            var ciUsr: Int = ciUsuario.toInt()
+                            manejoBDD.guardarCiUsuario(ctx,ciUsr)
+                            //La aplicación pasa al menú principal
+                            manejoDeGUI.irAMenuPrincipal(v)
+                        }
+                    },
+                    {
+
+                    }
                 )
-                //Oculta el panel con la animación de espera
-                //TODO: Reemplazar el panel de espera con un DIALOG
-                panelEspera.visibility = View.GONE
+                solicitudIS.POST("usuario_ci" to ciUsuario,
+                    "contrasenia" to contrasenia,
+                    "token_val" to respuesta.tokenVal(),
+                    "token_id" to respuesta.tokenId())
             },{
                 println(it.toString())
             })
         solicitud.POST("usuario_ci" to ciUsuario)
     }
 
-
-    /**
-     * Genera el proceso de iniciar sesión en el servidor
-     */
-    public fun iniciarSesion(v:View,
-                            ciUsuario: String,
-                            contrasenia: String,
-                             token_val:String,
-                             token_id:String
-    ){
-
-        val solicitud:Solicitud = Solicitud(urlLogin.toString(),
-            {
-                val ctx = v.context
-                var respuesta: RespTokenYSesion = RespTokenYSesion(it.toString())
-                println("tipo: "+respuesta.tipo())
-                println("mensaje: "+respuesta.mensaje())
-                println("token ID: "+respuesta.tokenId())
-                println("token Val: "+respuesta.tokenVal())
-                println("sesion ID: "+respuesta.sesionId())
-                println("sesion Val: "+respuesta.sesionVal())
-
-                if(analizarRespuesta(respuesta,ctx)){
-                    //Guarda los datos de sesión en la base de datos local
-                    manejoBDD.guardarSesion(ctx, respuesta)
-                    //Guarda los datos del Usuario en la base de datos local
-                    // por ahora solo la CI
-                    var ciUsr: Int = ciUsuario.toInt()
-                    manejoBDD.guardarCiUsuario(ctx,ciUsr)
-                    //La aplicación pasa al menú principal
-                    manejoDeGUI.irAMenuPrincipal(v)
-                }
-
-            },{
-                println(it.toString())//tv_destino.text = it.toString()
-            })
-        solicitud.POST(
-            "usuario_ci" to ciUsuario,
-            "contrasenia" to contrasenia,
-            "token_val" to token_val,
-            "token_id" to token_id
-            )
-    }
 
     /**
      * Permite analizar la respuesta recibida del servidor
@@ -215,7 +200,9 @@ class ManejoURL(ipServidor: String) {
         )
     }
 
-
+    /**
+     * Inicia el proceso de cerrar sesiones en el sistema
+     */
     fun cerrarSesion(ctx: Context,
                      usuario: Usuario,
                      sesion: Sesion
@@ -223,12 +210,18 @@ class ManejoURL(ipServidor: String) {
         var sesion_val = sesion.sesionVal
         var token_val = sesion.tokenVal
         var usuario_ci = usuario.ci
+        //Se muestra el diálogo de espera
+        var dialEsp = manejoDeGUI.mostrarDialogoEspera(ctx)
+        dialEsp?.show()
+        //Se valida el proceso con el servidor
         validarAccion(ctx,usuario,sesion
         ) {
+            //Se inicia la solicitud al servidor
             val solicitud = Solicitud(
                 urlLogout.toString(),
                 {
                     var respuesta = RespLogout(it.toString())
+                    dialEsp?.dismiss()
                     var dialogo =
                         manejoDeGUI.mostrarAdvertencia("Notificación",respuesta.mensaje(),ctx){
                             manejoDeGUI.irAIniciarSesion(ctx)
@@ -242,8 +235,8 @@ class ManejoURL(ipServidor: String) {
                 },
                 {
                     println(it.toString())
-                }
-            ).POST(
+                })
+            solicitud.POST(
                 "usuario_ci" to usuario_ci,
                 "sesion_val" to sesion_val.toString(),
                 "token_val" to token_val.toString()
@@ -266,6 +259,9 @@ class ManejoURL(ipServidor: String) {
         var telefono = usuario.telefono
         var email = usuario.email
 
+        //Se muestra el diálogo de espera
+        var dialogo = manejoDeGUI.mostrarDialogoEspera(ctx)
+        dialogo?.show()
         //1era solicitud: token
         val solicitud = Solicitud(
             urlRegistro.toString(),
@@ -279,7 +275,11 @@ class ManejoURL(ipServidor: String) {
                     urlRegistro.toString(),
                     {
                         var respuesta:RespRegistro = RespRegistro(it.toString())
-                        manejoDeGUI.mostrarAdvertencia(respuesta.estado(),respuesta.mensaje(),ctx)?.show()
+                        dialogo?.dismiss()
+                        manejoDeGUI.mostrarAdvertencia(respuesta.estado(),respuesta.mensaje(),ctx,{
+                            manejoDeGUI.irAIniciarSesion(ctx)
+                        })?.show()
+
                     },
                     {}
                 )
@@ -302,6 +302,45 @@ class ManejoURL(ipServidor: String) {
         solicitud.POST(
             "usuario_ci" to usuario_ci
         )
+
+    }
+
+    fun buscarDatosUsuario(ctx: Context,
+                         usuario: Usuario,
+                         sesion: Sesion){
+        var sesion_val = sesion.sesionVal
+        var token_val = sesion.tokenVal
+        var usuario_ci = usuario.ci
+        //1 - Validación
+        validarAccion(ctx,usuario,sesion){
+            //2 - Solicitud de datos
+            val solicitud = Solicitud(
+                urlBuscar.toString(),
+                {
+                    var respuesta = RespDatosUsuario(it.toString())
+                    var datosUsuario = Usuario(
+                        ci = respuesta.usuario_ci().toInt(),
+                        nombre = respuesta.nombre(),
+                        apellido = respuesta.apellido(),
+                        direccion = respuesta.direccion(),
+                        email = respuesta.email(),
+                        telefono = respuesta.telefono(),
+                        recibe_email = respuesta.recibeEmail(),
+                        recibe_sms = respuesta.recibeSMS()
+                    )
+                    manejoBDD.guardarDatosUsuario(ctx, datosUsuario)
+                },
+                {
+
+                }
+            )
+            solicitud.POST(
+                "tipo" to "10",
+                "usuario_ci" to usuario_ci,
+                "token_val" to token_val.toString(),
+                "sesion_val" to sesion_val.toString()
+            )
+        }
 
     }
 

@@ -65,8 +65,26 @@ class ManejoBDD {
                 this?.nuevoUsuario(usuario)
             }
         }
+        thread.join()
     }
 
+    /**
+     * Guarda los datos de un usuario en la base local.
+     * Todos los datos obtenidos del servidor
+     */
+    fun guardarDatosUsuario(ctx: Context,usuario: Usuario){
+        val thread:Thread = thread(start = true){
+            bdd = BaseDeDatos.obtenerBDD(ctx)
+            usuarioDAO = bdd?.usuarioDao()
+            with(usuarioDAO){
+                this?.nuevoUsuario(usuario)
+            }
+        }
+    }
+
+    /**
+     * Guarda los datos de un sesión en la base local
+     */
     fun guardarSesion(ctx:Context,respuesta: RespTokenYSesion){
         val thread:Thread = thread(start = true){
             //Guardado de datos en la BDD
@@ -140,6 +158,39 @@ class ManejoBDD {
             usuarios?.forEach {
                 var usr: Usuario = Usuario(
                     ci = it.ci
+                )
+                println("ci Usuario:"+it.ci)
+                usuario = usr
+            }
+        }
+        //La función join del thread es importante ya que fuerza al sistema a esperar
+        // al proceso del thread a que termine
+        thread.join()
+        return usuario
+    }
+
+    /**
+     * Obtiene los datos del Usuario de la base de datos local,
+     * Todos los datos
+     */
+    fun leerDatosUsuario(ctx: Context): Usuario? {
+        var usuario:Usuario? = null
+
+        val thread:Thread = thread(start = true){
+            bdd = BaseDeDatos.obtenerBDD(ctx)
+            usuarioDAO = bdd?.usuarioDao()
+
+            var usuarios = bdd?.usuarioDao()?.verDatosUsuario()
+
+            usuarios?.forEach {
+                var usr = Usuario(
+                    ci = it.ci,
+                    nombre = it.nombre,
+                    apellido = it.apellido,
+                    direccion = it.direccion,
+                    telefono = it.telefono,
+                    email = it.email,
+                    recibe_email = it.recibe_email
                 )
                 println("ci Usuario:"+it.ci)
                 usuario = usr

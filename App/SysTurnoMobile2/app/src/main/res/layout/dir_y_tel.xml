@@ -51,28 +51,31 @@
                         android:layout_weight="1" />
 
                     <TextView
-                        android:id="@+id/textView7"
+                        android:id="@+id/tv_TelsYDirs_TitMutualista"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
                         android:gravity="center_horizontal"
-                        android:text="Mutualista" />
+                        android:text="Mutualista"
+                        android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/textView6"
+                        android:id="@+id/tv_TelsYDirs_TitTel"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
                         android:gravity="center_horizontal"
-                        android:text="Teléfonos" />
+                        android:text="Teléfonos"
+                        android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/textView4"
+                        android:id="@+id/tv_TelsYDirs_TitDir"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
                         android:gravity="center_horizontal"
-                        android:text="Direcciones" />
+                        android:text="Direcciones"
+                        android:textStyle="bold" />
                 </TableRow>
 
                 <TableRow
@@ -121,7 +124,7 @@
                         android:layout_weight="1" />
 
                     <TextView
-                        android:id="@+id/textView7"
+                        android:id="@+id/textView8"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
@@ -129,7 +132,7 @@
                         android:text="Sanatorio Camcel" />
 
                     <TextView
-                        android:id="@+id/textView6"
+                        android:id="@+id/textView9"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
@@ -137,7 +140,7 @@
                         android:text="46428686" />
 
                     <TextView
-                        android:id="@+id/textView4"
+                        android:id="@+id/textView10"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
@@ -156,7 +159,7 @@
                         android:layout_weight="1" />
 
                     <TextView
-                        android:id="@+id/textView7"
+                        android:id="@+id/textView11"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
@@ -164,7 +167,7 @@
                         android:text="Policlinica Acegua" />
 
                     <TextView
-                        android:id="@+id/textView6"
+                        android:id="@+id/textView12"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
@@ -172,7 +175,7 @@
                         android:text="46409201" />
 
                     <TextView
-                        android:id="@+id/textView4"
+                        android:id="@+id/textView13"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
@@ -191,7 +194,7 @@
                         android:layout_weight="1" />
 
                     <TextView
-                        android:id="@+id/textView7"
+                        android:id="@+id/textView14"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
@@ -199,7 +202,7 @@
                         android:text="Policlinica Fraile Muerto" />
 
                     <TextView
-                        android:id="@+id/textView6"
+                        android:id="@+id/textView15"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
@@ -207,7 +210,7 @@
                         android:text="46889012" />
 
                     <TextView
-                        android:id="@+id/textView4"
+                        android:id="@+id/textView16"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
@@ -226,7 +229,7 @@
                         android:layout_weight="1" />
 
                     <TextView
-                        android:id="@+id/textView7"
+                        android:id="@+id/textView17"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
@@ -234,7 +237,7 @@
                         android:text="Policlinica de Noblia" />
 
                     <TextView
-                        android:id="@+id/textView6"
+                        android:id="@+id/textView18"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
@@ -242,7 +245,7 @@
                         android:text="46409144" />
 
                     <TextView
-                        android:id="@+id/textView4"
+                        android:id="@+id/textView19"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"

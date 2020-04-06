@@ -9,18 +9,22 @@ header("Content-Type: application/json; charset=UTF-8");
 
 
 if($_POST){
+    //echo "ok POST|";
     $confirmacion = new Confirmacion();
     
     if(isset($_POST["usuario_ci"]) && !(empty( $_POST["usuario_ci"] ))){
+        //echo "ok CI|";
         $usuario_ci = validarDatos($_POST["usuario_ci"]);
         
         //Si hay un valor de token en los datos enviados
         // se procede con el registro, comprobando cada dato
         if(isset($_POST["token_val"]) && !( empty($_POST["token_val"]) )){
+            //echo "ok token_val|";
             $token_val = $_POST["token_val"];
             
             //Si hay un token_id
             if(isset($_POST["token_id"]) && !( empty($_POST["token_id"]) )){
+                //echo "ok token_id|";
                 $token_id = $_POST["token_id"];
                 $token = new Token();
                 $token->token_Val = $token_val;
@@ -29,22 +33,26 @@ if($_POST){
                 //Se valida el token
                 $chequeo_token = validarToken($token,"11110007");
                 if($chequeo_token){
-                    
+                    //echo "ok chequeo_tkn|";
                     //Si hay una contraseña, de genera un hash
                     if(isset($_POST["contrasenia"]) && !(empty( $_POST["contrasenia"] ))){
+                        //echo "ok pass|";
                         $contrasenia = validarDatos($_POST["contrasenia"]);
                         $hash = crearHash($contrasenia);
 
                         //Si hay un nombre, se valida y se añade a la variable correspondiente
                         if(isset($_POST["nombre"]) && !(empty( $_POST["nombre"] )) ){
+                            //echo "ok nombre|";
                             $nombre = validarDatos($_POST["nombre"]);
 
                             //Si hay un apellido, se valida y se lo añade a la variable correspondiente
                             if(isset($_POST["apellido"]) && !(empty( $_POST["apellido"] ))){
+                                //echo "ok apellido|";
                                 $apellido = validarDatos($_POST["apellido"]);
 
                                  //Si hay un teléfono, se valida y se lo añade a la variable correspondiente
                                 if(isset($_POST["telefono"]) && !(empty( $_POST["telefono"] )) ){
+                                    //echo "ok tel|";
                                     $telefono = validarDatos($_POST["telefono"]);
 
                                     //Si hay una dirección
@@ -122,17 +130,30 @@ if($_POST){
             echo "$JSON_string";
 
         }
+        
         //Si hay un dato de usuario_ci, pero no hay token, es una solicitud
         // de token para registro
         else{
-            $token = new Token();
+            //echo "no token_val\n";
+            $tkn = new Token();
             $usuario_reg = "11110007";
-            $token = generarToken($usuario_reg);
-
+            //echo "$usuario_reg";
+            $tkn = generarToken($usuario_reg);
+            //echo $tkn->mensaje;
             http_response_code(200);
-            $JSON_string = TokenAJSON($token);
+            $JSON_string = TokenAJSON($tkn);
             echo "$JSON_string";
         }
     }
+    else{
+        $confirmacion->estado = "ERROR";
+        $confirmacion->mensaje = "Debe indicar una CI";
+        http_response_code(200);
+        $JSON_string=ObjAJSON($confirmacion);
+        echo "$JSON_string";
+    }
+    
+}else{
+    //echo "ok NO POST";
 }
 ?>

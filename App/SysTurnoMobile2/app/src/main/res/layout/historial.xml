@@ -130,7 +130,7 @@
                         android:weightSum="3">
 
                         <TextView
-                            android:id="@+id/textView67"
+                            android:id="@+id/textView70"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
@@ -138,7 +138,7 @@
                             android:text="25/10/2019" />
 
                         <TextView
-                            android:id="@+id/textView68"
+                            android:id="@+id/textView71"
                             android:layout_width="159dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
@@ -146,7 +146,7 @@
                             android:text="08:05" />
 
                         <TextView
-                            android:id="@+id/textView69"
+                            android:id="@+id/textView72"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -160,7 +160,7 @@
                         android:weightSum="3">
 
                         <TextView
-                            android:id="@+id/textView67"
+                            android:id="@+id/textView73"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
@@ -168,7 +168,7 @@
                             android:text="16/07/2019" />
 
                         <TextView
-                            android:id="@+id/textView68"
+                            android:id="@+id/textView74"
                             android:layout_width="159dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
@@ -176,7 +176,7 @@
                             android:text="09:45" />
 
                         <TextView
-                            android:id="@+id/textView69"
+                            android:id="@+id/textView75"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -190,7 +190,7 @@
                         android:weightSum="3">
 
                         <TextView
-                            android:id="@+id/textView67"
+                            android:id="@+id/textView76"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
@@ -198,7 +198,7 @@
                             android:text="25/06/2019" />
 
                         <TextView
-                            android:id="@+id/textView68"
+                            android:id="@+id/textView77"
                             android:layout_width="159dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
@@ -206,7 +206,7 @@
                             android:text="11:20" />
 
                         <TextView
-                            android:id="@+id/textView69"
+                            android:id="@+id/textView78"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"

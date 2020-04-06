@@ -39,21 +39,28 @@ class Registro : AppCompatActivity() {
         var contrasenia = et_registroContrasenia.text.toString()
         var repContrasenia = et_registroRepContrasenia.text.toString()
 
-
-        if (contrasenia.equals(repContrasenia)) {
-            var usuario = Usuario(
-                ci = usuario_ci.toInt(),
-                nombre = nombre,
-                apellido = apellido,
-                direccion = direccion,
-                telefono = telefono,
-                email = email
-            )
-
-            manejoURL?.registrarUsuario(ctx, usuario, contrasenia)
-        } else {
-            manejoDeGUI.mostrarAdvertencia("Error", "Las contraseñas no coinciden", ctx)
+        if (usuario_ci.length==0) {
+            manejoDeGUI.mostrarAdvertencia("Error","Debe ingresar su Cédula de Identidad",ctx)?.show()
         }
+        else{
+            if (contrasenia.equals(repContrasenia)) {
+                var usuario = Usuario(
+                    ci = usuario_ci.toInt(),
+                    nombre = nombre,
+                    apellido = apellido,
+                    direccion = direccion,
+                    telefono = telefono,
+                    email = email
+                )
+                //manejoDeGUI.mostrarDialogoEspera()
+                manejoURL?.registrarUsuario(ctx, usuario, contrasenia)
+
+            } else {
+                manejoDeGUI.mostrarAdvertencia("Error", "Las contraseñas no coinciden", ctx)?.show()
+            }
+        }
+
+
     }
 
     fun volverAlInicio(v: View){

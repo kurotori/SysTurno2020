@@ -6,8 +6,12 @@ import android.content.Context
 import android.content.DialogInterface
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentActivity
+import com.example.systurnomobile.Fragmentos.DialogoEspera
 import com.example.systurnomobile.MainActivity
 import com.example.systurnomobile.MenuPrincipal
+import com.example.systurnomobile.R
 
 class ManejoDeGUI {
 
@@ -153,6 +157,16 @@ class ManejoDeGUI {
             .setTitle(titulo)
 
         val dialogo: AlertDialog? = constr.create()
+        return dialogo
+    }
+
+    fun mostrarDialogoEspera(ctx: Context):AlertDialog?{
+        val constr: AlertDialog.Builder = ctx?.let{
+            AlertDialog.Builder(it)
+        }
+        constr.setMessage("Espere un momento, por favor...")
+        constr.setView(R.layout.dialogo_espera)
+        val dialogo = constr.create()
         return dialogo
     }
 

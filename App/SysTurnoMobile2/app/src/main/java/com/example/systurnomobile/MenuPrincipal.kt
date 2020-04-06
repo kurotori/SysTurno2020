@@ -55,23 +55,10 @@ class MenuPrincipal : AppCompatActivity() {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
-            R.id.menu_usuario_preferencias -> {
-                val intent: Intent = Intent(this, Preferencias::class.java)
-                startActivity(intent)
-                true
-            }
             R.id.menu_usuario_cerrarSesion ->{
                 usuario?.let {
                     sesion?.let { it1 ->
-                        /*var dialogo = manejoDeGUI.mostrarDialogoPregunta(
-                            "Cerrar Sesión",
-                            "Va a cerrar sesión en SysTurno\n¿Desea continuar?",
-                            this.applicationContext,
-                            {},//manejoURL?.cerrarSesion(this, it, it1) },
-                            {}
-                        )
-                        dialogo?.show()
-                         */
+
                         var dialogo = ctx?.let { it2 ->
                             manejoDeGUI.mostrarDialogoPregunta(
                                 "Cerrar Sesión",

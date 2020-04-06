@@ -10,6 +10,8 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.preference.PreferenceManager
 import com.example.systurnomobile.BDD.ManejoBDD
+import com.example.systurnomobile.Fragmentos.DialogoEspera
+import com.example.systurnomobile.Herramientas.ManejoDeGUI
 import com.example.systurnomobile.Herramientas.ManejoPreferencias
 import com.example.systurnomobile.Herramientas.ManejoURL
 import com.example.systurnomobile.Herramientas.Respuestas.RespTokenYSesion
@@ -21,6 +23,7 @@ import kotlinx.android.synthetic.main.activity_main_original.*
 class MainActivity : AppCompatActivity() {
     var ipServidor:String=""
     var manejoURL:ManejoURL? = null
+    val manejoDeGUI = ManejoDeGUI()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +46,7 @@ class MainActivity : AppCompatActivity() {
 
     //Establece lo que sucede cuando se hace click sobre el boton de preferencias
     //(los tres puntitos)
+    /*
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
@@ -64,6 +68,7 @@ class MainActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
+    */
 
     /***
      * Función para ocultar el teclado. Se invoca desde el objeto v: View de la función
@@ -78,12 +83,11 @@ class MainActivity : AppCompatActivity() {
      */
     fun iniciarSesion(v: View){
         v.hideKeyboard()
-        panelEspera.visibility = View.VISIBLE
 
         val ciUsuario:String = et_InicioCiUsuario.text.toString()
         val contrasenia:String = et_InicioContrasenia.text.toString()
         //obtenerToken inicia la sesión
-        manejoURL?.obtenerToken(v,ciUsuario,contrasenia,panelEspera)
+        manejoURL?.iniciarSesion(v,ciUsuario,contrasenia)
     }
 
     fun irAMenuPrincipal(v:View){
@@ -92,6 +96,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun irARegistro(v:View){
+
         val intent = Intent(v.context,Registro::class.java)
         startActivity(intent)
     }

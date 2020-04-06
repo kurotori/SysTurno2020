@@ -27,9 +27,8 @@
         public $telefono = "";
         public $email = "";
         public $direccion = "";
-        public $hash = "";
         public $recibeSMS = "";
-        public $recibeMail = "";
+        public $recibeEmail = "";
     }
     
     class DatosLogin{
@@ -38,7 +37,7 @@
     }
 
      class SesionValida{
-         public $valida = "";
+         public $valida = "";//Valores:  "true" / "false"
      }
 
     class Confirmacion{

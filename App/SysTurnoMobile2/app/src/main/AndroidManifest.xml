@@ -16,11 +16,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <activity android:name=".Registro"></activity>
+        <activity android:name=".Historial"></activity>
+        <activity android:name=".Registro" />
         <activity android:name=".PantallaInicial">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -31,9 +32,8 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-
-        <activity android:name=".MenuPrincipal"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".MenuPrincipal" />
 
         <meta-data
             android:name="preloaded_fonts"

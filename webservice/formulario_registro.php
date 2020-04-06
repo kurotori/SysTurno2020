@@ -26,6 +26,12 @@
             <label for="contrasenia">Contraseña</label><br /> 
             <input id="contrasenia" name="contrasenia" type="password" /> <br />
             
+            <label for="token_val">Token Val</label><br /> 
+            <input id="token_val" name="token_val" type="password" /> <br />
+            
+            <label for="token_id">Token ID</label><br /> 
+            <input id="token_id" name="token_id" type="password" /> <br />
+            
             <input type="submit" value="Enviar">
         </form>
         
