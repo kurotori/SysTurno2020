@@ -6,12 +6,10 @@ import android.content.Context
 import android.content.DialogInterface
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.FragmentActivity
-import com.example.systurnomobile.Fragmentos.DialogoEspera
-import com.example.systurnomobile.MainActivity
+import com.example.systurnomobile.IniciarSesion
 import com.example.systurnomobile.MenuPrincipal
 import com.example.systurnomobile.R
+import kotlin.concurrent.thread
 
 class ManejoDeGUI {
 
@@ -52,7 +50,7 @@ class ManejoDeGUI {
     fun irAIniciarSesion(v:View){
         val ctx = v.context
         val intent: Intent = Intent(ctx,
-            MainActivity::class.java)
+            IniciarSesion::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -66,7 +64,7 @@ class ManejoDeGUI {
     fun irAIniciarSesion(ctx: Context){
 
         val intent: Intent = Intent(ctx,
-            MainActivity::class.java)
+            IniciarSesion::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -168,6 +166,14 @@ class ManejoDeGUI {
         constr.setView(R.layout.dialogo_espera)
         val dialogo = constr.create()
         return dialogo
+    }
+
+    fun ejecutarEsperando(accionQueEspera: () -> Unit,accionQueRetrasa: () -> Unit){
+        val thread:Thread = thread (start = true){
+            accionQueRetrasa()
+        }
+        thread.join()
+        accionQueEspera()
     }
 
 

@@ -331,7 +331,9 @@ function buscarDatosLoginUsuario($usuario_CI){
         
     }
 
-    //Obtiene los datos del perfil del usuario y los devuelve en un objeto
+    /**
+    * Obtiene los datos del perfil del usuario y los devuelve en un objeto
+    */
     function buscarDatosPerfilUsuario($usuario_ci){
             $datos_usuario = new DatosUsuario();
 
@@ -346,9 +348,6 @@ function buscarDatosLoginUsuario($usuario_CI){
                 $sentencia->execute();
                 $resultado = $sentencia->fetchAll();
 
-               //print_r($resultado);
-
-                //echo ":::===>> ".($resultado[0]['nombre_u']);
                 $datos_usuario->usuario_CI = $resultado[0]['id'];
                 $datos_usuario->nombre = $resultado[0]['nombre'];
                 $datos_usuario->apellido = $resultado[0]['apellido'];
@@ -369,6 +368,162 @@ function buscarDatosLoginUsuario($usuario_CI){
         }
 
 
+    /**
+    * Permite actualizar los datos del perfil de un usuario 
+    */
+    function actualizarDatosPerfilUsuario($usuario_ci, DatosUsuario $datosUsuario){
+            $confirmacion = new Confirmacion();
+
+            $conexion = GenerarConexion();
+            try{
+                // set the PDO error mode to exception
+                $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $consulta = "UPDATE Perfil SET nombre=:nombre, apellido=:apellido, telefono=:telefono, direccion=:direccion, email=:email, recibeSMS=:recibeSMS, recibeEmail=:recibeMail WHERE id = :usuario_ci";
+                $sentencia = $conexion->prepare($consulta);
+                $sentencia->bindParam(':usuario_ci', $usuario_ci);
+                $sentencia->bindParam(':nombre', $datosUsuario->nombre);
+                $sentencia->bindParam(':apellido', $datosUsuario->apellido);
+                $sentencia->bindParam(':telefono', $datosUsuario->telefono);
+                $sentencia->bindParam(':direccion', $datosUsuario->direccion);
+                $sentencia->bindParam(':email', $datosUsuario->email);
+                $sentencia->bindParam(':recibeMail', $datosUsuario->recibeEmail);
+                $sentencia->bindParam(':recibeSMS', $datosUsuario->recibeSMS);
+
+                $sentencia->execute();
+                $confirmacion->estado="OK";
+                $confirmacion->mensaje = "Datos o Preferencias actualizados con éxito.";
+
+            }
+            catch(PDOException $e){
+                $confirmacion->estado =  "Error";
+                $confirmacion->mensaje = $e->getMessage();
+
+            }
+
+            $conexion=null;
+            return $confirmacion;
+        }
+
+/*FUNCIONES PARA GENERAR RECETAS*/
+
+    /**Obtiene la lista de usuarios para un campo desplegable en la etiqueta SELECT 
+    *de un formulario HTML.
+    */
+    function generarListaUsuariosParaSelect(){
+         $conexion = GenerarConexion();
+            try{
+                // set the PDO error mode to exception
+                $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $consulta = "SELECT Usuario.ci, concat_ws(' ',Perfil.nombre,Perfil.apellido) FROM Usuario INNER JOIN Perfil WHERE Usuario.CI = Perfil.id";
+                $sentencia = $conexion->prepare($consulta);
+                $sentencia->execute();
+                $resultado = $sentencia->fetchAll();
+                
+                foreach($resultado as $dato){
+                    echo "<option value='".$dato['ci']."'>".$dato[1]."</option>";
+                }
+    
+            }
+        
+            catch(PDOException $e){
+                $confirmacion->estado =  "Error";
+                $confirmacion->mensaje = $e->getMessage();
+
+            }
+
+            $conexion=null;
+    }
+
+    /**Obtiene la lista de medicamentos para un campo desplegable en la etiqueta SELECT 
+    *de un formulario HTML.
+    */
+    function generarListaMedicamentos(){
+        $medicamentos = new ListaMedicamento();
+        $conexion = GenerarConexion();
+        try{
+            // set the PDO error mode to exception
+            $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $consulta = "SELECT id,nombre FROM Medicamento";
+            $sentencia = $conexion->prepare($consulta);
+            $sentencia->execute();
+            $resultado = $sentencia->fetchAll();
+
+            foreach($resultado as $dato){
+                $med = new Medicamento();
+                $med->id = $dato['id'];
+                $med->nombre = $dato['nombre'];
+                array_push($medicamentos->medicamentos,$med);
+                //echo "<option value='".$dato['ci']."'>".$dato[1]."</option>";
+
+            }
+
+        }
+
+        catch(PDOException $e){
+            $confirmacion->estado =  "Error";
+            $confirmacion->mensaje = $e->getMessage();
+
+        }
+
+        $conexion=null;
+        return $medicamentos;
+    }
+
+    /**
+    * Genera una nueva receta VACÍA en el servidor
+    */
+    function nuevaReceta($doctor_ci,$usuario_ci,$fecha){
+        $receta_id = 0;
+        $conexion = GenerarConexion();
+        try{
+            // set the PDO error mode to exception
+            $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $consulta = "CALL nueva_receta(:doctor_ci,:usuario_ci,:fecha)";
+            $sentencia = $conexion->prepare($consulta);
+            $sentencia->bindParam(':doctor_ci', $doctor_ci);
+            $sentencia->bindParam(':usuario_ci', $usuario_ci);
+            $sentencia->bindParam(':fecha', $fecha);
+            $sentencia->execute();
+            
+            $resultado = $sentencia->fetchAll();
+            
+            $receta_id = $resultado[0][0];
+        }
+        catch(PDOException $e){
+            $receta_id = $e->getMessage();
+        }
+
+        $conexion=null;
+        return $receta_id;
+    }
+
+    /**
+    * Agrega un medicamento a una receta existente
+    */
+    function agregarMedicamento($receta_id,$medicamento_id,$cantidad){
+        $confirmacion = new Confirmacion();
+        $conexion = GenerarConexion();
+        try{
+            // set the PDO error mode to exception
+            $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $consulta = "CALL agregar_medicamento(:receta_id,:medicamento_id,:cantidad)";
+            $sentencia = $conexion->prepare($consulta);
+            $sentencia->bindParam(':receta_id', $receta_id);
+            $sentencia->bindParam(':medicamento_id', $medicamento_id);
+            $sentencia->bindParam(':cantidad', $cantidad);
+            $sentencia->execute();
+            
+            $confirmacion->estado="OK";
+            $confirmacion->mensaje="Datos agregados con éxito";
+        }
+        catch(PDOException $e){
+           $confirmacion->mensaje = "Error: ".$e->getMessage();
+            $confirmacion->esestado = "ERROR";
+        }
+
+        $conexion=null;
+        return $confirmacion;
+    }
 
 
 ?>

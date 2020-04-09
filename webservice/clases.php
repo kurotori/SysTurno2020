@@ -44,4 +44,17 @@
         public $estado = "";//Estados: ERROR y OK
         public $mensaje = "";
     }
+
+    class Receta{
+        public $id = "";
+    }
+
+    class Medicamento{
+        public $id="";
+        public $nombre="";
+    }
+
+    class ListaMedicamento{
+        public $medicamentos=array();
+    }
 ?>

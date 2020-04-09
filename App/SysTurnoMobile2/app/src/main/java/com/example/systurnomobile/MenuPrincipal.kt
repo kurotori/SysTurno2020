@@ -14,12 +14,15 @@ import com.example.systurnomobile.BDD.Usuario
 import com.example.systurnomobile.Herramientas.ManejoDeGUI
 import com.example.systurnomobile.Herramientas.ManejoURL
 import com.example.systurnomobile.Herramientas.Solicitud
+import kotlinx.android.synthetic.main.menu_principal2.*
+import kotlin.concurrent.thread
 
 class MenuPrincipal : AppCompatActivity() {
 
     val manejoBDD = ManejoBDD()
     var manejoURL:ManejoURL? = null
     var usuario: Usuario? = null
+    var datosUsuario: Usuario?=null
     var sesion: Sesion? = null
     val manejoDeGUI = ManejoDeGUI()
     var ctx: Context? = null
@@ -39,6 +42,21 @@ class MenuPrincipal : AppCompatActivity() {
         usuario = manejoBDD.leerCiUsuario(this)
         sesion = manejoBDD.leerSesion(this)
 
+        //Obtenemos los datos del usuario del servidor y los guardamos en la base local
+        //y luego los actualizamos en el objeto correspondiente
+
+
+            if(usuario != null){
+                if(sesion != null){
+                    val hilo:Thread = thread(start = true) {
+                        manejoURL!!.buscarDatosUsuario(this, usuario!!,sesion!!,tv_MenuPrincipalTitulo)
+                    }
+                    hilo.join()
+                    usuario = manejoBDD.leerDatosUsuario(this)
+                    //.text = "Hola, "+usuario?.nombre + " "+usuario?.apellido
+                }
+            }
+
     }
 
 
@@ -54,6 +72,8 @@ class MenuPrincipal : AppCompatActivity() {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
+
+        //Proceso de cerrar sesión
         return when (item.itemId) {
             R.id.menu_usuario_cerrarSesion ->{
                 usuario?.let {
@@ -95,8 +115,8 @@ class MenuPrincipal : AppCompatActivity() {
 
     fun verHistorial(v:View){
         //val intent: Intent = Intent(v.context, Historial::class.java)
-        //val intent:Intent = Intent(this, HistorialRclrMain::class.java)
-        //startActivity(intent)
+        val intent:Intent = Intent(this, HistorialRclrMain::class.java)
+        startActivity(intent)
     }
 
     fun verTelsYDirs(v:View){
@@ -104,8 +124,8 @@ class MenuPrincipal : AppCompatActivity() {
         //startActivity(intent)
     }
 
-    fun recordatiorios(v:View){
-        //val intent: Intent = Intent(v.context,Recordatorios::class.java)
-        //startActivity(intent)
+    fun verRecordatorios(v:View){
+        val intent: Intent = Intent(v.context,Recordatorios::class.java)
+        startActivity(intent)
     }
 }

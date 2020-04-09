@@ -1,6 +1,8 @@
 package com.example.systurnomobile.BDD
 
 import android.content.Context
+import android.widget.TextView
+import com.example.systurnomobile.Herramientas.Respuestas.RespDatosUsuario
 import com.example.systurnomobile.Herramientas.Respuestas.RespTokenYSesion
 import kotlin.concurrent.thread
 
@@ -14,6 +16,7 @@ class ManejoBDD {
     /**
      * Funcion de pruebas para guardar datos recibidos del servidor y leerlos
      * y corroborar así el correcto funcionamiento de la base local
+     * NO USAR
      */
     public fun guardarLeer(ctx:Context,respuesta: RespTokenYSesion):String{
         var datos= ""
@@ -70,16 +73,43 @@ class ManejoBDD {
 
     /**
      * Guarda los datos de un usuario en la base local.
+     * Elimina todos los datos anteriores para evitar tener múltiples versiones de los mismos datos.
      * Todos los datos obtenidos del servidor
      */
-    fun guardarDatosUsuario(ctx: Context,usuario: Usuario){
+    fun guardarDatosUsuario(ctx: Context,datosUsuario: RespDatosUsuario){
+        //borrarUsuarios(ctx)
         val thread:Thread = thread(start = true){
             bdd = BaseDeDatos.obtenerBDD(ctx)
             usuarioDAO = bdd?.usuarioDao()
+
+            var usuario = Usuario(
+                ci = datosUsuario.usuario_ci().toInt(),
+                nombre = datosUsuario.nombre(),
+                apellido = datosUsuario.apellido(),
+                direccion = datosUsuario.direccion(),
+                email = datosUsuario.email(),
+                telefono = datosUsuario.telefono(),
+                recibe_email = datosUsuario.recibeEmail(),
+                recibe_sms = datosUsuario.recibeSMS()
+            )
+
             with(usuarioDAO){
                 this?.nuevoUsuario(usuario)
             }
         }
+        thread.join()
+    }
+
+    fun actualizarDatosUsuario(ctx:Context,usuario:Usuario){
+        val thread:Thread = thread(start = true){
+            bdd = BaseDeDatos.obtenerBDD(ctx)
+            usuarioDAO = bdd?.usuarioDao()
+
+            with(usuarioDAO){
+                this?.actualizarDatosUsuario(usuario)
+            }
+        }
+        thread.join()
     }
 
     /**
@@ -190,9 +220,10 @@ class ManejoBDD {
                     direccion = it.direccion,
                     telefono = it.telefono,
                     email = it.email,
+                    recibe_sms = it.recibe_sms,
                     recibe_email = it.recibe_email
                 )
-                println("ci Usuario:"+it.ci)
+                println("recibe :"+it.nombre)
                 usuario = usr
             }
         }
@@ -227,5 +258,6 @@ class ManejoBDD {
         }
         thread.join()
     }
+
 
 }

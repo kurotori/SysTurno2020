@@ -1,9 +1,6 @@
 package com.example.systurnomobile.BDD
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 
 
 @Dao
@@ -19,4 +16,7 @@ interface UsuarioDAO {
 
     @Query("DELETE FROM Usuario")
     fun borrarTodosLosUsuarios()
+
+    @Update
+    fun actualizarDatosUsuario(usuario: Usuario)
 }

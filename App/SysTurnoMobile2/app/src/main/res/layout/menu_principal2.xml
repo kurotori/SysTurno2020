@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:gravity="center"
-        android:text="@string/login_Bienvenida_M"
+        android:text="@string/iniciar_sesion_Titulo"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -153,7 +153,7 @@
                 android:id="@+id/btn_MPRecordatorios"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:onClick="recordatiorios"
+                android:onClick="verRecordatorios"
                 app:srcCompat="@drawable/ic_access_alarm_black_24dp" />
 
             <Space

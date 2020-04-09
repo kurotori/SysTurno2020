@@ -16,6 +16,7 @@ import com.example.systurnomobile.BDD.Sesion
 import com.example.systurnomobile.BDD.Usuario
 import com.example.systurnomobile.Fragmentos.DialogoEspera
 import com.example.systurnomobile.Herramientas.Respuestas.*
+import com.example.systurnomobile.R
 import java.net.URL
 
 class ManejoURL(ipServidor: String) {
@@ -34,6 +35,7 @@ class ManejoURL(ipServidor: String) {
     val urlLogout: URL = URL(servidor+"logout/")
     val urlBuscar: URL = URL(servidor+"buscar/")
     val urlRegistro: URL = URL(servidor+"registro/")
+    val urlActualizar: URL = URL(servidor + "actualizar/")
 
     private val manejoJSON:ManejoJSON = ManejoJSON()
 
@@ -62,7 +64,7 @@ class ManejoURL(ipServidor: String) {
      * Solicita un token al servidor e intenta iniciar sesión con el mismo
      */
     public fun iniciarSesion(v:View,
-                            ciUsuario: String,
+                            usuario_ci: String,
                             contrasenia:String
     ){
         val ctx = v.context
@@ -79,21 +81,30 @@ class ManejoURL(ipServidor: String) {
                     {
                         val ctx = v.context
                         var respuesta: RespTokenYSesion = RespTokenYSesion(it.toString())
+
                         println("tipo: "+respuesta.tipo())
                         println("mensaje: "+respuesta.mensaje())
                         println("token ID: "+respuesta.tokenId())
                         println("token Val: "+respuesta.tokenVal())
                         println("sesion ID: "+respuesta.sesionId())
                         println("sesion Val: "+respuesta.sesionVal())
+
                         //Oculta el panel con la animación de espera
                         dialogo?.dismiss()
+
                         if(analizarRespuesta(respuesta,ctx)){
                             //Guarda los datos de sesión en la base de datos local
                             manejoBDD.guardarSesion(ctx, respuesta)
                             //Guarda los datos del Usuario en la base de datos local
                             // por ahora solo la CI
-                            var ciUsr: Int = ciUsuario.toInt()
-                            manejoBDD.guardarCiUsuario(ctx,ciUsr)
+                            //var ciUsr: Int = ciUsuario.toInt()
+                            manejoBDD.guardarCiUsuario(ctx,usuario_ci.toInt())
+                            var sesion = manejoBDD.leerSesion(ctx)
+                            var usuario = Usuario(ci = usuario_ci.toInt())
+                            if(sesion!=null){
+                                buscarDatosUsuario(ctx,usuario,sesion,null)
+                            }
+
                             //La aplicación pasa al menú principal
                             manejoDeGUI.irAMenuPrincipal(v)
                         }
@@ -102,14 +113,14 @@ class ManejoURL(ipServidor: String) {
 
                     }
                 )
-                solicitudIS.POST("usuario_ci" to ciUsuario,
+                solicitudIS.POST("usuario_ci" to usuario_ci,
                     "contrasenia" to contrasenia,
                     "token_val" to respuesta.tokenVal(),
                     "token_id" to respuesta.tokenId())
             },{
                 println(it.toString())
             })
-        solicitud.POST("usuario_ci" to ciUsuario)
+        solicitud.POST("usuario_ci" to usuario_ci)
     }
 
 
@@ -305,12 +316,19 @@ class ManejoURL(ipServidor: String) {
 
     }
 
+    /**
+     * Busca los datos del usuario en el servidor. Si hay un TextView indicado, actualiza
+     * el texto de ese textView
+     */
     fun buscarDatosUsuario(ctx: Context,
-                         usuario: Usuario,
-                         sesion: Sesion){
+                           usuario: Usuario,
+                           sesion: Sesion,
+                           titulo: TextView?
+    ){
         var sesion_val = sesion.sesionVal
         var token_val = sesion.tokenVal
         var usuario_ci = usuario.ci
+
         //1 - Validación
         validarAccion(ctx,usuario,sesion){
             //2 - Solicitud de datos
@@ -318,17 +336,27 @@ class ManejoURL(ipServidor: String) {
                 urlBuscar.toString(),
                 {
                     var respuesta = RespDatosUsuario(it.toString())
-                    var datosUsuario = Usuario(
+                    println("Encontrado:"+respuesta.nombre()+" "+respuesta.apellido())
+
+                    if(titulo!=null){
+                        titulo.text = ctx.getString(
+                            R.string.menu_principal_tv_titulo,
+                            respuesta.nombre(),
+                            respuesta.apellido()
+                        )
+                    }
+                    val usr=Usuario(
                         ci = respuesta.usuario_ci().toInt(),
                         nombre = respuesta.nombre(),
                         apellido = respuesta.apellido(),
                         direccion = respuesta.direccion(),
-                        email = respuesta.email(),
                         telefono = respuesta.telefono(),
-                        recibe_email = respuesta.recibeEmail(),
-                        recibe_sms = respuesta.recibeSMS()
+                        email = respuesta.email(),
+                        recibe_sms = respuesta.recibeSMS(),
+                        recibe_email = respuesta.recibeEmail()
                     )
-                    manejoBDD.guardarDatosUsuario(ctx, datosUsuario)
+                    //Una vez se obtienen del servidor, los datos se almacenan en la base local
+                    manejoBDD.actualizarDatosUsuario(ctx,usr)
                 },
                 {
 
@@ -341,10 +369,54 @@ class ManejoURL(ipServidor: String) {
                 "sesion_val" to sesion_val.toString()
             )
         }
-
     }
 
 
+    /**
+     *
+     */
+    fun actualizarDatos(ctx:Context,
+                        datosUsuario:Usuario,
+                        sesion: Sesion,
+                        tipo: Int
+    ){
+        //Se muestra el diálogo de espera
+        var dialogo = manejoDeGUI.mostrarDialogoEspera(ctx)
+        dialogo?.show()
+        //1 - Validación
+        validarAccion(ctx,datosUsuario,sesion){
+            println("validación ok")
+            println("Desde actualizarDatos: CI Recibida: "+datosUsuario.ci)
+            println("Desde actualizarDatos: Sesion Recibida: "+sesion.sesionVal)
+            println("Desde actualizarDatos: Token Recibido: "+sesion.tokenVal)
+            //2 - Actualización de datos
+            val solicitud = Solicitud(
+                urlActualizar.toString(),
+                {
+                    var respuesta=RespConfirmacion(it.toString())
+                    manejoBDD.actualizarDatosUsuario(ctx,datosUsuario)
+                    dialogo?.dismiss()
+                    manejoDeGUI.mostrarAdvertencia(respuesta.estado(),respuesta.mensaje(),ctx)?.show()
+                },
+                {
+                    println("ERROR:respuesta:"+it)
+                }
+            )
+            solicitud.POST(
+                "usuario_ci" to datosUsuario.ci,
+                "token_val" to sesion.tokenVal.toString(),
+                "sesion_val" to sesion.sesionVal.toString(),
+                "tipo" to tipo.toString(),
+                "nombre" to datosUsuario.nombre.toString(),
+                "apellido" to datosUsuario.apellido.toString(),
+                "direccion" to datosUsuario.direccion.toString(),
+                "telefono" to datosUsuario.telefono.toString(),
+                "email" to datosUsuario.email.toString(),
+                "recibeMail" to datosUsuario.recibe_email.toString(),
+                "recibeSMS" to datosUsuario.recibe_sms.toString()
+            )
+        }
+    }
 
 
 

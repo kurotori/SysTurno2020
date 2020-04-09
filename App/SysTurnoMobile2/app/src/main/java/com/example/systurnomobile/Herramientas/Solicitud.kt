@@ -26,7 +26,7 @@ class Solicitud(val url:String,
     private fun makeRequest(method: Int, params: HashMap<String, String>) {
         // Creating a StringRequest
         val req = object : StringRequest(method, url, { res ->
-
+            println("El Servidor dijo:"+res)
             // Creating JSON object from the response string
             // and passing it to result: (JSONObject) -> Unit function
             resultado(JSONObject(res.toString().trim()))

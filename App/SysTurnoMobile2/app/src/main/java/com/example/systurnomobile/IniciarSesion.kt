@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.iniciar_sesion.*
 
 import kotlinx.android.synthetic.main.activity_main_original.*
 
-class MainActivity : AppCompatActivity() {
+class IniciarSesion : AppCompatActivity() {
     var ipServidor:String=""
     var manejoURL:ManejoURL? = null
     val manejoDeGUI = ManejoDeGUI()

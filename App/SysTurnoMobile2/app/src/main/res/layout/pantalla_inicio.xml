@@ -15,7 +15,7 @@
         android:ems="10"
         android:fontFamily="monospace"
         android:gravity="center_horizontal"
-        android:text="@string/login_Bienvenida_M"
+        android:text="@string/iniciar_sesion_Titulo"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textColor="@color/design_default_color_primary"
         android:textSize="24sp"

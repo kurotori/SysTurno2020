@@ -15,6 +15,11 @@ header("Content-Type: application/json; charset=UTF-8");
 // - sesion_val
 // - tipo de búsqueda
 // - datos extra
+
+//Tipos de búsqueda:
+// 10 - Perfil de usuario
+// 11 - Medicamentos recetados y no entregados a un usuario
+// 12 - 
 if($_POST){
     //echo "ok POST|";
     //Se chequean sistemáticamente los datos de sesión para validar el proceso
@@ -50,7 +55,7 @@ if($_POST){
                                 $resultado = buscarDatosPerfilUsuario($usuario_ci);
                                 break;
                             case "11":
-                                buscarDatosPrefUsuario();
+                                $resultado = buscarMedicamentosRecetadosUsuario($usuario_ci);
                             case "2":
                                 buscarMedicamentosDeReceta();
                                 //buscarRecetasUsuario();

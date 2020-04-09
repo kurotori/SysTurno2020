@@ -37,7 +37,7 @@ CREATE TABLE Medicamento (
 
 CREATE TABLE Receta ( 
   id int(11) unsigned NOT NULL unique auto_increment primary key, 
-  fecha date NOT NULL 
+  fecha date NOT NULL DEFAULT CURRENT_TIMESTAMP
 ); 
 
 CREATE TABLE Usuario ( 
@@ -95,7 +95,7 @@ CREATE TABLE Asociado (
 
 /* n receta contiene n medicamento */
 CREATE TABLE Contiene (
-  id int(11) unsigned NOT NULL unique primary key,
+  id int(11) unsigned NOT NULL unique auto_increment primary key,
   receta_id int(11) unsigned NOT NULL,
   medicamento_id int(11) unsigned NOT NULL, 
   cantidad int(3) unsigned DEFAULT NULL, 

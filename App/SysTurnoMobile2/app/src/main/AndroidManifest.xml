@@ -16,7 +16,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Historial"></activity>
+        <activity android:name=".Recordatorios"></activity>
+        <activity android:name=".HistorialRclrMain"/>
         <activity android:name=".Registro" />
         <activity android:name=".PantallaInicial">
             <intent-filter>
@@ -28,9 +29,9 @@
         <activity
             android:name=".Preferencias"
             android:label="@string/title_activity_preferencias"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".IniciarSesion" />
         <activity
-            android:name=".MainActivity"
+            android:name=".IniciarSesion"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".MenuPrincipal" />

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
-    tools:context=".MainActivity">
+    tools:context=".IniciarSesion">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cntrlyt_contenido"
@@ -21,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
-            android:text="@string/login_et_ci"
+            android:text="@string/iniciar_sesion_tv_ci"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             app:layout_constraintBottom_toBottomOf="@+id/et_InicioCiUsuario"
             app:layout_constraintEnd_toStartOf="@+id/et_InicioCiUsuario"
@@ -45,6 +45,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:ems="10"
+            android:hint="...."
             android:inputType="textPassword"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/et_InicioCiUsuario" />
@@ -52,10 +53,10 @@
         <Button
             android:id="@+id/btn_ingresar"
             android:layout_width="106dp"
-            android:layout_height="45dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:onClick="iniciarSesion"
-            android:text="Ingresar"
+            android:text="@string/iniciar_sesion_btn_iniciarSesion"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/et_InicioContrasenia" />
@@ -67,7 +68,7 @@
             android:layout_marginEnd="8dp"
             android:width="160sp"
             android:onClick="irARegistro"
-            android:text="Nuevo Registro"
+            android:text="@string/iniciar_sesion_btn_nuevoRegistro"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btn_ingresar"
             app:layout_constraintWidth_percent="0.3" />
@@ -80,7 +81,7 @@
             android:ems="10"
             android:fontFamily="monospace"
             android:gravity="center_horizontal"
-            android:text="@string/login_Bienvenida_M"
+            android:text="@string/iniciar_sesion_Titulo"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textColor="@color/design_default_color_primary"
             android:textSize="24sp"
@@ -93,7 +94,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
-            android:text="Contraseña:"
+            android:text="@string/iniciar_sesion_tv_contrasenia"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             app:layout_constraintBottom_toBottomOf="@+id/et_InicioContrasenia"
             app:layout_constraintEnd_toStartOf="@+id/et_InicioContrasenia"
@@ -114,7 +115,7 @@
             android:layout_height="wrap_content"
             android:width="160sp"
             android:onClick="salir"
-            android:text="Salir"
+            android:text="@string/iniciar_sesion_btn_salir"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btn_ingresar"
             app:layout_constraintWidth_percent="0.3" />

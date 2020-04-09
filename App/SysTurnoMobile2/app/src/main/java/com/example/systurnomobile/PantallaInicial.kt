@@ -11,7 +11,6 @@ import com.example.systurnomobile.BDD.ManejoBDD
 import com.example.systurnomobile.BDD.Sesion
 import com.example.systurnomobile.BDD.Usuario
 import com.example.systurnomobile.Herramientas.ManejoURL
-import com.example.systurnomobile.Herramientas.Respuestas.RespValidarSesion
 import com.example.systurnomobile.Herramientas.Solicitud
 
 class PantallaInicial : AppCompatActivity() {
@@ -32,9 +31,9 @@ class PantallaInicial : AppCompatActivity() {
         val manejoURL = ManejoURL(ipServidor)
 
         var sesion: Sesion? = manejoBDD.leerSesion(this)
-        println("Lei la sesion")
-        var usuario:Usuario? = manejoBDD.leerCiUsuario(this)
-        println("lei el usuario")
+        println("Leyendo la sesion")
+        var usuario:Usuario? = manejoBDD.leerDatosUsuario(this)
+        println("leyendo el usuario")
 
         if (sesion == null){
             println("no hay sesion")
@@ -55,13 +54,13 @@ class PantallaInicial : AppCompatActivity() {
     }
 
     fun irAInicioSesion(ctx:Context){
-        val intent: Intent = Intent(ctx,MainActivity::class.java)
+        val intent: Intent = Intent(ctx,IniciarSesion::class.java)
         startActivity(intent)
     }
 
     //Establece lo que sucede cuando se hace click sobre el boton de preferencias
     //(los tres puntitos)
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+    /*override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
@@ -80,5 +79,7 @@ class PantallaInicial : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+     */
 
 }

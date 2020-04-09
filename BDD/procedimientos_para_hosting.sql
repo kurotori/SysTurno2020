@@ -222,3 +222,55 @@ END$$
 DELIMITER ;
 
 
+/* Crea una nueva receta, la relaciona con un doctor y un usuario y devuelve la ID */
+
+DELIMITER $$
+CREATE 
+PROCEDURE nueva_receta( 
+	IN doctor_ci int(8) unsigned,
+	IN usuario_ci int(8) unsigned,
+	IN receta_fecha date
+)
+BEGIN
+	DECLARE usr_ci int(8) unsigned;
+	DECLARE doc_ci int(8) unsigned;
+	DECLARE rct_fch date;
+	DECLARE rct_id int(11) unsigned;
+	
+	SET usr_ci = usuario_ci;
+	SET doc_ci = doctor_ci;
+	SET rct_fch = receta_fecha;
+	
+	INSERT INTO Receta(fecha) VALUES(rct_fch);
+	SET rct_id = LAST_INSERT_ID();
+	INSERT INTO Entrega(doctor_ci,receta_id) VALUES(doc_ci,rct_id);
+	INSERT INTO Recibe(usuario_ci,receta_id) VALUES(usr_ci,rct_id);
+	SELECT rct_id;
+	
+END$$
+DELIMITER ;
+
+
+
+/* Añade un medicamento a una receta */
+
+DELIMITER $$
+CREATE 
+PROCEDURE agregar_medicamento( 
+	IN receta_id int(11) unsigned,
+	IN medicamento_id int(11) unsigned,
+	IN cantidad int(3) unsigned
+)
+BEGIN
+	DECLARE rct_id int(11) unsigned;
+	DECLARE med_id int(11) unsigned;
+	DECLARE cant int(3) unsigned;
+	
+	SET rct_id = receta_id;
+	SET med_id = medicamento_id;
+	SET cant = cantidad;
+	
+	INSERT INTO Contiene(receta_id,medicamento_id,cantidad) VALUES (rct_id,med_id,cant);
+	
+END$$
+DELIMITER ;

@@ -1,11 +1,22 @@
 <resources>
+    <!-- Textos Generales -->
     <string name="app_name">SysTurno Móvil</string>
-    <string name="action_settings">Settings</string>
     <string name="inicio_btn_preferencias">Preferencias</string>
     <string name="menu_btn_cerrarSesion">Cerrar Sesión</string>
 
-    <string name="login_Bienvenida_M">SysTurno</string>
-    <string name="login_et_ci">C.I.:</string>
+
+
+
+    <!-- Iniciar Sesión -->
+    <string name="iniciar_sesion_Titulo">SysTurno</string>
+    <string name="iniciar_sesion_tv_ci">C.I.:</string>
+    <string name="iniciar_sesion_btn_iniciarSesion">Iniciar Sesión</string>
+    <string name="iniciar_sesion_btn_nuevoRegistro">Crear Usuario</string>
+    <string name="iniciar_sesion_btn_salir">Salir</string>
+    <string name="iniciar_sesion_tv_contrasenia">Contraseña:</string>
+
+    <!-- Menú Principal -->
+    <string name="menu_principal_tv_titulo">Hola, %1$s %2$s</string>
 
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>

@@ -1,6 +1,7 @@
 package com.example.systurnomobile.Herramientas.Respuestas
 
 import com.example.systurnomobile.Herramientas.ManejoJSON
+import com.example.systurnomobile.BDD.Sesion
 
 /**
  * Esta clase permite manejar e interpretar las respuestas del servidor al
@@ -37,4 +38,5 @@ class RespTokenYSesion(respuesta:String):Respuesta(respuesta){
         var resp:String=analizarRespuesta("Token","tipo","no_tipo")
         return resp
     }
+
 }
