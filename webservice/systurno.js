@@ -22,11 +22,15 @@ function nuevaReceta(){
             success:function(data){
                 receta = data;
                 console.log(receta.Receta.id);
-                $("#tabla_receta").html(
-                    "<thead><tr><th colspan='2'>Receta:"+receta.Receta.id+"</th></tr></thead>"
-                );
-                $("#tabla_receta").html( $("#tabla_receta").html()+"<tr><td colspan='3'><button id='btn_nuevoMed' onclick='nuevoMedicamento()'>Nuevo Medicamento</button></td></tr>"
-                );
+                
+                var tabla = document.getElementById("tabla_receta");
+                var cabecera=tabla.createTHead();
+                var cuerpo=tabla.createTBody();
+                cabecera.innerHTML = "<tr><td colspan=3>Receta:"+receta.Receta.id+"</td></tr>";
+                var numFilas = cuerpo.rows.length;
+                var fila = cuerpo.insertRow(numFilas);
+                var celda1 = fila.insertCell(0);
+                celda1.innerHTML="<button id='btn_nuevoMed' onclick='nuevoMedicamento()'>Nuevo Medicamento</button>";
                 document.getElementById("btn_nuevaReceta").disabled = true;
                 document.getElementById("btn_guardarReceta").disabled = false;
                 
@@ -58,7 +62,7 @@ function nuevoMedicamento(){
                 //console.log(medicamentos);
                 var datos_tabla = $("#tabla_receta").html();
                 
-                medicamentos.ListaMedicamento.medicamentos.forEach(
+                medicamentos.ListadoMedicamentos.medicamentos.forEach(
                     medicamento => listado = listado + "<option value='"+medicamento.id+"'>"+medicamento.nombre+"</option>");
                 
                 var tabla = document.getElementById("tabla_receta");
@@ -119,6 +123,13 @@ function guardarReceta(){
         agregarMedicamento(receta_id,medicamentos[i].value,cantidades[i].value);
         console.log(receta_id+" - "+ medicamentos[i].value+" - "+cantidades[i].value);
     }
+    
+    var tabla = document.getElementById("tabla_receta");
+    tabla.removeChild(tabla.getElementsByTagName('tbody')[0])
+    var cabecera=tabla.createTHead();
+    cabecera.innerHTML = "Receta Guardada";
+    document.getElementById("btn_nuevaReceta").disabled = false;
+    document.getElementById("btn_guardarReceta").disabled = true;
 }
 
 

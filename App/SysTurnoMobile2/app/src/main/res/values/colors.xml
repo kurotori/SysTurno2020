@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#6200EE</color>
+    <!-- Acá definimos los colores principales que se usan en la aplicación -->
+    <color name="colorPrimary">#042c63</color>
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
+
+    <!--  Colores de uso General  -->
+    <color name="colorFondoPantallas">#E7EFFAF9</color>
+    <color name="colorSeparadorGris">#9F9F9F</color>
+    <color name="colorTitulos">#000</color>
+
+    <!--  Menú Principal  -->
+    <color name="colorMenuBtnReservar">#82B1FF</color>
+    <color name="colorMenuBtnCancelar">#E53935</color>
+
+
+    <!--  Solicitar turno item: Medicamento Recetado  -->
+    <color name="colorRecetasEncabezado">#0749A3</color>
+    <color name="colorRecetasContenido">#E7CEF1EE</color>
+
+
 </resources>

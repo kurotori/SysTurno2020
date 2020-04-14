@@ -12,37 +12,30 @@
         <link rel="stylesheet" href="index.css">
     </head>
     <body>
-            <label for="fecha">Fecha:</label>
-            <input id="fecha" name="fecha" type="date" /><br />
+        <label for="fecha">Fecha:</label>
+        <input id="fecha" name="fecha" type="date" /><br />
             
-            <label for="usuario_ci">Usuario</label><br /> 
-            <select id="usuario_ci" name="usuario_ci">
-                <?php
-                    generarListaUsuariosParaSelect();
-                    
-                ?>                
-            </select><br/>
+        <label for="usuario_ci">Usuario:</label><br /> 
+        <select id="usuario_ci" name="usuario_ci">
+            <?php
+            //echo "OK";
+            generarListaUsuariosParaSelect();    
+            //generarListaUsuariosParaSelect();
 
-            <input id="doctor_ci" name="doctor_ci" value="22446688" type="hidden" />
+            ?>                
+        </select><br/>
             
-            <table id="tabla_receta">
-                <tr>
-                    <th>
-                        
-                    </th>
-                    <th>
-                    </th>
-                    <th>
-                    </th>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-            </table>
-            <button id="btn_nuevaReceta">Nueva Receta</button>
-            <button id="btn_guardarReceta" onclick="guardarReceta()" disabled="true">Guardar Receta</button>
-        
+        <label for="doctor_ci">Doctor:</label><br />
+        <select id="doctor_ci" name="doctor_ci">
+            <?php
+            generarListaDoctoresParaSelect();
+            ?>  
+        </select>
+            
+        <table id="tabla_receta">
+        </table>
+        <button id="btn_nuevaReceta">Nueva Receta</button>
+        <button id="btn_guardarReceta" onclick="guardarReceta()" disabled="true">Guardar Receta</button>
+
     </body>
 </html>

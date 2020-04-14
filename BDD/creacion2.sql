@@ -87,10 +87,11 @@ CREATE TABLE Tiene(
 	perfil_id int(8) unsigned unique not null
 );
 
-/* 1 turno asociado con n receta */
-CREATE TABLE Asociado ( 
+/* n turno asociado con n receta */
+CREATE TABLE Asociado (
+  id int(11) unsigned NOT NULL unique auto_increment primary key,
   turno_id int(11) unsigned NOT NULL, 
-  receta_id int(11) unsigned NOT NULL unique primary key
+  receta_id int(11) unsigned NOT NULL
 );
 
 /* n receta contiene n medicamento */
@@ -249,5 +250,26 @@ ALTER TABLE Asociado
 add constraint fk_asociado_receta
 foreign key (receta_id)
 references Receta(id)
+on update cascade
+on delete cascade;
+
+ALTER TABLE Asociado
+add constraint fk_asociado_receta
+foreign key (receta_id)
+references Receta(id)
+on update cascade
+on delete cascade;
+
+ALTER TABLE Tiene
+add constraint fk_usuario_tiene
+foreign key (usuario_ci)
+references Usuario(ci)
+on update cascade
+on delete cascade;
+
+ALTER TABLE Tiene
+add constraint fk_tiene_perfil
+foreign key (perfil_id)
+references Perfil(id)
 on update cascade
 on delete cascade;

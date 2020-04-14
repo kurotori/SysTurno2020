@@ -38,9 +38,9 @@ class IniciarSesion : AppCompatActivity() {
         manejoBDD.borrarSesiones(this)
 
 
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this/*  Activity context */)
-        ipServidor = sharedPreferences.getString("ipServidor","").toString()
-        manejoURL = ManejoURL(ipServidor)
+        //val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this/*  Activity context */)
+        //ipServidor = sharedPreferences.getString("ipServidor","").toString()
+        manejoURL = ManejoURL()
 
     }
 

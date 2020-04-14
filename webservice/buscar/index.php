@@ -19,7 +19,7 @@ header("Content-Type: application/json; charset=UTF-8");
 //Tipos de búsqueda:
 // 10 - Perfil de usuario
 // 11 - Medicamentos recetados y no entregados a un usuario
-// 12 - 
+// 20 - El primer turno abierto disponible
 if($_POST){
     //echo "ok POST|";
     //Se chequean sistemáticamente los datos de sesión para validar el proceso
@@ -55,13 +55,14 @@ if($_POST){
                                 $resultado = buscarDatosPerfilUsuario($usuario_ci);
                                 break;
                             case "11":
-                                $resultado = buscarMedicamentosRecetadosUsuario($usuario_ci);
-                            case "2":
-                                buscarMedicamentosDeReceta();
-                                //buscarRecetasUsuario();
+                                $resultado = buscarMedicamentosRecetadosNoEnt($usuario_ci);
                                 break;
-                            case "3":
-                                buscarTurnosDisponibles();
+                            case "20":
+                               $resultado = buscarTurno();
+                                break;
+                            //buscar el listado de todos los turnos disponibles
+                            case "21":
+                                $resultado = buscarTurnos();
                                 break;
                             case "4":
                                 buscarHistorialTurnosUsuario();
@@ -76,15 +77,6 @@ if($_POST){
             }
         }
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
 }
 
 ?>

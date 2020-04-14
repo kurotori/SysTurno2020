@@ -34,4 +34,6 @@ open class Respuesta(respServidor: String?) {
         return resultado
     }
 
+
+
 }

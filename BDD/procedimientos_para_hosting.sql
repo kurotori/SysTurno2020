@@ -274,3 +274,94 @@ BEGIN
 	
 END$$
 DELIMITER ;
+
+/* Genera un listado de todos los medicamentos recetados y no entregados a un usuario */
+DELIMITER $$
+CREATE 
+PROCEDURE medicamentos_recetados_no_ent( 
+	IN usuario_ci int(8) unsigned
+	)
+BEGIN
+	DECLARE usr_ci int(8) unsigned;
+	
+	SET usr_ci = usuario_ci;
+	
+	SELECT 
+		Receta.id as receta_id,
+		Receta.fecha as fecha,
+		Contiene.medicamento_id as med_id, 
+		Contiene.entregado as "estado",
+		Contiene.cantidad as "cantidad",
+		(SELECT Medicamento.nombre FROM Medicamento 
+			WHERE Medicamento.id = Contiene.medicamento_id) 
+			as "med_nombre",
+		(SELECT CONCAT_WS("-",CONCAT_WS(" ",Doctor.nombre,Doctor.apellido),Doctor.especialidad)
+		From Doctor
+			WHERE Doctor.ci = 
+			(SELECT Entrega.doctor_ci FROM Entrega
+			WHERE Entrega.receta_id = Receta.id))
+			as "especialista",
+		(SELECT Medicamento.stock FROM Medicamento 
+			WHERE Medicamento.id = Contiene.medicamento_id)
+			as "stock"
+	FROM Contiene INNER JOIN Receta INNER JOIN Recibe
+	WHERE Receta.id=Contiene.receta_id AND
+	Receta.id = Recibe.receta_id AND
+	Contiene.entregado = "no" AND
+	Recibe.usuario_ci = usr_ci
+	ORDER BY receta_id;
+END$$
+DELIMITER ;
+
+
+/* Genera un listado de todas las recetas de un usuario con medicamentos no entregados */
+DELIMITER $$
+CREATE 
+PROCEDURE recetas_de_usuario( 
+	IN usuario_ci int(8) unsigned
+	)
+BEGIN
+	DECLARE usr_ci int(8) unsigned;
+	
+	SET usr_ci = usuario_ci;
+	
+	SELECT 
+		Receta.id as receta_id,
+		Receta.fecha as fecha,
+		(SELECT CONCAT_WS("-",CONCAT_WS(" ",Doctor.nombre,Doctor.apellido),Doctor.especialidad)
+		From Doctor
+		WHERE Doctor.ci = 
+			(SELECT Entrega.doctor_ci FROM Entrega
+			WHERE Entrega.receta_id = Receta.id))
+			as "especialista"
+	FROM Contiene INNER JOIN Receta INNER JOIN Recibe
+	WHERE Receta.id=Contiene.receta_id AND
+	Receta.id = Recibe.receta_id AND
+	Contiene.entregado = "no" AND
+	Recibe.usuario_ci = usr_ci
+	GROUP BY receta_id
+	ORDER BY receta_id;
+END$$
+DELIMITER ;
+
+
+/* Asigna un turno a un usuario y lo marca como confirmado */
+DELIMITER $$
+CREATE 
+PROCEDURE asignar_turno( 
+	IN usuario_ci int(8) unsigned,
+	IN turno_id int(11) unsigned
+	)
+BEGIN
+	DECLARE usr_ci int(8) unsigned;
+	DECLARE trn_id int(11) unsigned;
+	
+	SET usr_ci = usuario_ci;
+	SET trn_id = turno_id;
+	
+	INSERT INTO Genera(usuario_ci,turno_id) VALUES (usr_ci,trn_id);
+	
+	UPDATE Turno SET Turno.estado='confirmado' WHERE Turno.id=trn_id;
+	
+END$$
+DELIMITER ;

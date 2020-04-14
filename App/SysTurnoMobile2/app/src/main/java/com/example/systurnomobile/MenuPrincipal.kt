@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.TextView
 import androidx.preference.PreferenceManager
 import com.example.systurnomobile.BDD.ManejoBDD
 import com.example.systurnomobile.BDD.Sesion
@@ -35,10 +36,12 @@ class MenuPrincipal : AppCompatActivity() {
         //IMPORTANTE: Se inicializa la clase para manejar las solicitudes
         Solicitud.init(this)
 
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this/*  Activity context */)
-        var ipServidor = sharedPreferences.getString("ipServidor","").toString()
+        var cosa = findViewById<TextView>(R.id.tv_solicitarTurno_disponibilidad)
 
-        manejoURL = ManejoURL(ipServidor)
+        //val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this/*  Activity context */)
+        //var ipServidor = sharedPreferences.getString("ipServidor","").toString()
+
+        manejoURL = ManejoURL()
         usuario = manejoBDD.leerCiUsuario(this)
         sesion = manejoBDD.leerSesion(this)
 
@@ -50,6 +53,7 @@ class MenuPrincipal : AppCompatActivity() {
                 if(sesion != null){
                     val hilo:Thread = thread(start = true) {
                         manejoURL!!.buscarDatosUsuario(this, usuario!!,sesion!!,tv_MenuPrincipalTitulo)
+                        //manejoURL!!.buscarMedicamentosRecetadosNoEnt(this,usuario!!,sesion!!)
                     }
                     hilo.join()
                     usuario = manejoBDD.leerDatosUsuario(this)
@@ -98,8 +102,10 @@ class MenuPrincipal : AppCompatActivity() {
 
 
 
-    public fun nuevaReserva(v: View){
-        //val intent: Intent = Intent(this, ReservarTurno::class.java)
+    fun nuevaReserva(v: View){
+        //manejoURL?.buscarMedicamentosRecetadosNoEnt(v.context,usuario!!,sesion!!)
+        val intent: Intent = Intent(v.context, SolicitarTurnoRclrMain::class.java)
+        manejoURL?.buscarMedicamentosRecetadosNoEntIrA(v.context,usuario!!,sesion!!,intent)
         //startActivity(intent)
     }
 
@@ -109,13 +115,12 @@ class MenuPrincipal : AppCompatActivity() {
     }
 
     fun acercaDe(v:View){
-        //val intent: Intent= Intent(v.context,AcercaDe::class.java)
-        //startActivity(intent)
+        val intent = Intent(v.context,AcercaDe::class.java)
+        startActivity(intent)
     }
 
     fun verHistorial(v:View){
-        //val intent: Intent = Intent(v.context, Historial::class.java)
-        val intent:Intent = Intent(this, HistorialRclrMain::class.java)
+        val intent:Intent = Intent(v.context, HistorialRclrMain::class.java)
         startActivity(intent)
     }
 

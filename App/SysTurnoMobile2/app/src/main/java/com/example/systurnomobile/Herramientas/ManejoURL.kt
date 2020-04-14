@@ -1,9 +1,11 @@
 package com.example.systurnomobile.Herramientas
 
 import android.content.Context
+import android.content.Intent
 import android.view.View
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -11,23 +13,18 @@ import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.example.systurnomobile.BDD.ManejoBDD
-import com.example.systurnomobile.BDD.Sesion
-import com.example.systurnomobile.BDD.Usuario
+import com.example.systurnomobile.BDD.*
 import com.example.systurnomobile.Fragmentos.DialogoEspera
 import com.example.systurnomobile.Herramientas.Respuestas.*
 import com.example.systurnomobile.R
 import java.net.URL
 
-class ManejoURL(ipServidor: String) {
+class ManejoURL() {
 
-    //public var ipServidor=""
     private val manejoBDD:ManejoBDD = ManejoBDD()
-    private val manejoDeGUI: ManejoDeGUI =
-        ManejoDeGUI()
+    private val manejoDeGUI: ManejoDeGUI = ManejoDeGUI()
 
-    //private val servidor:String = "http://"+ipServidor+"/SysTurno2020/"
-    private val servidor:String = "https://"+ipServidor+"/"
+    private val servidor:String = "https://systurno-movil.000webhostapp.com/"
 
     val urlPruebas: URL = URL(servidor+"pruebajson/")
     val urlLogin:URL = URL(servidor+"login/")
@@ -36,6 +33,7 @@ class ManejoURL(ipServidor: String) {
     val urlBuscar: URL = URL(servidor+"buscar/")
     val urlRegistro: URL = URL(servidor+"registro/")
     val urlActualizar: URL = URL(servidor + "actualizar/")
+    val urlTurnos:URL = URL(servidor+"turnos/")
 
     private val manejoJSON:ManejoJSON = ManejoJSON()
 
@@ -373,7 +371,7 @@ class ManejoURL(ipServidor: String) {
 
 
     /**
-     *
+     * Actualiza los datos del perfil del usuario
      */
     fun actualizarDatos(ctx:Context,
                         datosUsuario:Usuario,
@@ -418,7 +416,193 @@ class ManejoURL(ipServidor: String) {
         }
     }
 
+    fun buscarMedicamentosRecetadosNoEnt(ctx:Context,
+                                         usuario:Usuario,
+                                         sesion: Sesion
+    ){
+        //Se muestra el diálogo de espera
+        var dialogo = manejoDeGUI.mostrarDialogoEspera(ctx)
+        dialogo?.show()
+        //1 - Validamos la acción
+        validarAccion(ctx,usuario,sesion){
+            // 2- Generamos la solicitud de datos
+            val solicitud = Solicitud(
+                servidor+"prueba_busqueda.php",
+                {
+                    println("manejando la respuesta del servidor")
+                    var respuesta = RespMedicamentosRecetados(it.toString())
+                    var meds = respuesta.listaMeds()
+                    meds?.forEach {
+                        manejoBDD.guardarMedicamentosRecetados(ctx,it)
+                    }
+                    dialogo?.dismiss()
+                },
+                {
+                    println("ERROR:"+it)
+                }
+            )
+            solicitud.POST()
+        }
+    }
+
+    /**
+     * Busca los medicamentos recetados y abre otra actividad
+     */
+    fun buscarMedicamentosRecetadosNoEntIrA(ctx:Context,
+                                         usuario:Usuario,
+                                         sesion: Sesion,
+                                         intent: Intent
+    )
+    {
+        //Se muestra el diálogo de espera
+        var dialogo = manejoDeGUI.mostrarDialogoEspera(ctx)
+        dialogo?.show()
+        //1 - Validamos la acción
+        validarAccion(ctx,usuario,sesion){
+            // 2- Generamos la solicitud de datos
+            val solicitud = Solicitud(
+                urlBuscar.toString(),
+                {
+                    println("manejando la respuesta del servidor")
+                    var respuesta = RespMedicamentosRecetados(it.toString())
+                    var meds = respuesta.listaMeds()
+                    println("Longitud de lista de meds:"+meds?.size)
+
+                    manejoBDD.borrarMedicamentos(ctx)
+                    meds?.forEach {
+                        manejoBDD.guardarMedicamentosRecetados(ctx,it)
+                    }
+                    dialogo?.dismiss()
+                    ContextCompat.startActivity(ctx,intent,null)
+                },
+                {
+                    println("ERROR:"+it)
+                }
+            )
+            solicitud.POST(
+                "usuario_ci" to usuario.ci,
+                "token_val" to sesion.tokenVal.toString(),
+                "sesion_val" to sesion.sesionVal.toString(),
+                "tipo" to "11"
+            )
+        }
+    }
+
+    /**
+     * Obtiene el listado de turnos mas reciente disponible en el servidor
+     */
+    fun buscarTurnosAbiertos(ctx:Context,
+                             usuario:Usuario,
+                             sesion: Sesion/*,
+                                 tv_fecha:TextView,
+                                 tv_numero:TextView,
+                                 tv_hora:TextView*/
+    ){
+        //Se muestra el diálogo de espera
+        //var dialogo = manejoDeGUI.mostrarDialogoEspera(ctx)
+        //dialogo?.show()
+
+        //1 - Validamos la solicitud
+        validarAccion(ctx,usuario,sesion){
+            //2 - Solicitamos los datos
+            val solicitud = Solicitud(
+                urlBuscar.toString(),
+                {
+                    var respuesta:RespTurnos= RespTurnos(it.toString())
+                    var turnos = respuesta.listaTurnos()
+
+                    manejoBDD.borrarTurnos(ctx)
+                    turnos.forEach {
+                        manejoBDD.nuevoTurno(ctx,it)
+                    }
+                },
+                {
+                    println("ERROR: " + it)
+                }
+            )
+            solicitud.POST(
+                "usuario_ci" to usuario.ci,
+                "token_val" to sesion.tokenVal.toString(),
+                "sesion_val" to sesion.sesionVal.toString(),
+                "tipo" to "21"
+            )
+        }
+    }
+
+    /**
+     * Actualiza el listado de turnos
+     */
+    fun actualizarTurnosAbiertos(ctx:Context,
+                                usuario:Usuario,
+                                sesion: Sesion
+    ){
+
+        //Se muestra el diálogo de espera
+        var dialogo = manejoDeGUI.mostrarDialogoEspera(ctx)
+        dialogo?.show()
+
+        //1 - Validamos la solicitud
+        validarAccion(ctx,usuario,sesion){
+            //2 - Solicitamos los datos
+            val solicitud = Solicitud(
+                urlBuscar.toString(),
+                {
+                    var respuesta:RespTurnos= RespTurnos(it.toString())
+                    var turnos = respuesta.listaTurnos()
+                    turnos.forEach {
+                        manejoBDD.nuevoTurno(ctx,it)
+                    }
+                },
+                {
+                    println("ERROR: " + it)
+                }
+            )
+        }
+    }
 
 
+    /**
+     * Inicia el proceso de solicitar un turno
+     */
+    fun solicitarTurno(ctx:Context,
+                       usuario:Usuario,
+                       sesion: Sesion,
+                       turno_id:String
+    ){
+        //1 - mostramos el diálogo de espera
+        val dialogo = manejoDeGUI.mostrarDialogoEspera(ctx)
+        dialogo?.show()
+        //2 - Validamos la acción
+        validarAccion(ctx,usuario,sesion){
+            //3 - Generamos la solicitud
+            val solicitud= Solicitud(
+                urlTurnos.toString(),
+                {
+                    var respuesta = RespConfirmacion(it.toString())
+                    dialogo?.dismiss()
+                    if(respuesta.estado().equals("ERROR")){
+                        manejoDeGUI.mostrarAdvertencia("Error",respuesta.mensaje(),ctx)?.show()
+                        println(respuesta.estado()+":"+respuesta.mensaje())
+                    }
+                    else{
+                        var d=manejoDeGUI.mostrarAdvertencia("",respuesta.mensaje(),ctx){
+                            manejoDeGUI.irAMenuPrincipal(ctx)
+                        }
+                        d?.show()
+                    }
+                },
+                {
+                    println("Error:"+it)
+                }
+            )
+            solicitud.POST(
+                "usuario_ci" to usuario.ci,
+                "token_val" to sesion.tokenVal.toString(),
+                "sesion_val" to sesion.sesionVal.toString(),
+                "turno_id" to turno_id,
+                "tipo" to "100"
+            )
+        }
+    }
 
 }

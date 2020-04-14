@@ -22,10 +22,10 @@ class Registro : AppCompatActivity() {
         //IMPORTANTE: Se inicializa la clase para manejar las solicitudes
         Solicitud.init(this)
 
-        val sharedPreferences =
-            PreferenceManager.getDefaultSharedPreferences(this)
-        var ipServidor = sharedPreferences.getString("ipServidor","").toString()
-        manejoURL = ManejoURL(ipServidor)
+        //val sharedPreferences =
+            //PreferenceManager.getDefaultSharedPreferences(this)
+        //var ipServidor = sharedPreferences.getString("ipServidor","").toString()
+        manejoURL = ManejoURL()
     }
 
     fun registrarUsuario(v: View){

@@ -5,8 +5,6 @@
     <string name="menu_btn_cerrarSesion">Cerrar Sesión</string>
 
 
-
-
     <!-- Iniciar Sesión -->
     <string name="iniciar_sesion_Titulo">SysTurno</string>
     <string name="iniciar_sesion_tv_ci">C.I.:</string>

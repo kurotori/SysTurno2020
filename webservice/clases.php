@@ -47,6 +47,31 @@
 
     class Receta{
         public $id = "";
+        public $fecha = "";
+        public $especialista = "";
+        //public $medicamentosRecetados = array();
+    }
+    
+    /**
+    *  Clase para el listado de recetas de un usuario
+    */
+    class Recetas{
+        public $recetas=array();
+    }
+    
+    class ListadoMedRecetados{
+        public $medicamentos = array();
+    }
+
+    class MedicamentoRecetado{
+        public $receta_id = "";
+        public $fecha = "";
+        public $especialista = "";
+        public $med_id="";
+        public $med_nombre="";
+        public $cantidad="";
+        public $disponibilidad="";
+        public $entregado="";
     }
 
     class Medicamento{
@@ -54,7 +79,18 @@
         public $nombre="";
     }
 
-    class ListaMedicamento{
+    class ListadoMedicamentos{
         public $medicamentos=array();
     }
+
+    class Turno{
+        public $id="0";
+        public $fechaHora="";
+        public $estado=""; // 'confirmado','cancelado','usado','abierto' para la BDD '---' para evaluación
+    }
+
+    class Turnos{
+        public $turnos=array();
+    }
+
 ?>

@@ -33,9 +33,9 @@ class Recordatorios : AppCompatActivity() {
         //IMPORTANTE: Se inicializa la clase para manejar las solicitudes
         Solicitud.init(this)
 
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this/*  Activity context */)
-        var ipServidor = sharedPreferences.getString("ipServidor","").toString()
-        manejoURL = ManejoURL(ipServidor)
+        //val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this/*  Activity context */)
+        //var ipServidor = sharedPreferences.getString("ipServidor","").toString()
+        manejoURL = ManejoURL()
 
         var datosUsuario = manejoBDD.leerDatosUsuario(this)
         var nuevosDatos:Usuario?=null
@@ -132,9 +132,6 @@ class Recordatorios : AppCompatActivity() {
 
 
 
-    fun volverAMenu(v: View){
-        val intent = Intent(v.context, MenuPrincipal::class.java)
-        startActivity(intent)
-    }
+
 
 }

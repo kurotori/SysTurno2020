@@ -4,23 +4,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".IniciarSesion">
 
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:weightSum="20">
+        android:weightSum="8">
 
         <TableRow
             android:id="@+id/tblrw_barraHerramientas"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_height="0dp"
             android:background="#FFFFFF"
             android:weightSum="1">
 
             <com.google.android.material.appbar.AppBarLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:layout_weight="1"
                 android:theme="@style/AppTheme.AppBarOverlay">
@@ -39,7 +39,7 @@
             android:id="@+id/tblrw_contenido"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="19">
+            android:layout_weight="7">
 
             <include
                 layout="@layout/iniciar_sesion"
@@ -50,14 +50,5 @@
         </TableRow>
 
     </TableLayout>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:visibility="gone"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

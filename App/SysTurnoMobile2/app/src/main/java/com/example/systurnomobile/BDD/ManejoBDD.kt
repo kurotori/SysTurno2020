@@ -12,6 +12,8 @@ class ManejoBDD {
     private var bdd: BaseDeDatos? = null
     private var sesionDAO: SesionDAO? = null
     private var usuarioDAO: UsuarioDAO? = null
+    private var medicamentoRecetadoDAO: MedicamentoRecetadoDAO?=null
+    private var turnoDAO: TurnoDAO?=null
 
     /**
      * Funcion de pruebas para guardar datos recibidos del servidor y leerlos
@@ -134,6 +136,7 @@ class ManejoBDD {
                 this?.nuevaSesion(sesion)
             }
         }
+        thread.join()
     }
 
     /**
@@ -257,6 +260,171 @@ class ManejoBDD {
             sesionDAO?.borrarTodasLasSesiones()
         }
         thread.join()
+    }
+
+    fun guardarMedicamentosRecetados(ctx:Context,medicamentoRecetado: MedicamentoRecetado){
+        val thread:Thread = thread(start = true){
+            bdd = BaseDeDatos.obtenerBDD(ctx)
+            medicamentoRecetadoDAO = bdd?.medicamentoRecetadoDao()
+            /*
+            var medicamento = MedicamentoRecetado(
+                receta_id = medicamentoRecetado.receta_id,
+                fecha = medicamentoRecetado.fecha,
+                med_id = medicamentoRecetado.med_id,
+                med_nombre = medicamentoRecetado.med_nombre,
+                cantidad = medicamentoRecetado.cantidad,
+                especialista = medicamentoRecetado.especialista,
+                entregado = medicamentoRecetado.entregado,
+                disponibilidad = medicamentoRecetado.disponibilidad
+            )*/
+            medicamentoRecetadoDAO?.nuevoMedicamentoRecetado(medicamentoRecetado)
+
+        }
+        thread.join()
+    }
+
+    /**
+     * Obtiene el listado de medicamentos recetados
+     */
+    fun leerMedicamentosRecetados(ctx:Context):List<MedicamentoRecetado>?{
+        var medicamentosRecetados:MutableList<MedicamentoRecetado>?=ArrayList<MedicamentoRecetado>()
+        val thread:Thread = thread(start = true){
+            bdd = BaseDeDatos.obtenerBDD(ctx)
+            medicamentoRecetadoDAO = bdd?.medicamentoRecetadoDao()
+
+            var medRec=medicamentoRecetadoDAO?.todosLosMedicamentosRecetados()
+            medRec?.forEach {
+                println("Leido de la BDD local: "+it.med_nombre)
+                medicamentosRecetados?.add(it)
+            }
+        }
+        thread.join()
+        return medicamentosRecetados
+    }
+
+    /**
+     * Borra todos los datos de Medicamentos de la base local
+     */
+    fun borrarMedicamentos(ctx: Context){
+        val thread:Thread = thread(start = true) {
+            bdd = BaseDeDatos.obtenerBDD(ctx)
+            medicamentoRecetadoDAO = bdd?.medicamentoRecetadoDao()
+
+            medicamentoRecetadoDAO?.borrarTodosLosMedicamentos()
+        }
+        thread.join()
+    }
+
+    /**
+     * Ingresa un nuevo turno en la Base de Datos local
+     */
+    fun nuevoTurno(ctx:Context, turno:Turno){
+        val thread:Thread = thread(start = true){
+            bdd = BaseDeDatos.obtenerBDD(ctx)
+            turnoDAO = bdd?.turnoDao()
+            turnoDAO?.nuevoTurno(turno)
+        }
+        thread.join()
+    }
+
+    /**
+     * Lee el primer turno de la lista de la BdD local
+     */
+    fun leerPrimerTurno(ctx:Context):Turno?{
+        var turno:Turno? = null
+
+        val thread:Thread = thread(start = true){
+            bdd = BaseDeDatos.obtenerBDD(ctx)
+            turnoDAO = bdd?.turnoDao()
+
+            var turnos = turnoDAO?.primerTurno()
+            turnos?.forEach {
+                var t = Turno(
+                    id = it.id,
+                    fechahora = it.fechahora,
+                    estado = it.estado
+                )
+                turno = t
+            }
+        }
+        thread.join()
+        return turno
+    }
+
+
+    /**
+     * Borra los turnos almacenados en la BdD local
+     */
+    fun borrarTurnos(ctx:Context){
+        val thread:Thread = thread(start = true){
+            bdd = BaseDeDatos.obtenerBDD(ctx)
+            turnoDAO = bdd?.turnoDao()
+            turnoDAO?.borrarTurnos()
+        }
+        thread.join()
+    }
+
+    /**
+     * Busca el turno siguiente al turno entregado
+     */
+    fun leerTurnoSig(ctx:Context, turno: Turno):Turno?{
+        var turno_id = turno.id
+        var turno_sig:Turno? = null
+
+        val thread:Thread = thread(start = true) {
+            bdd = BaseDeDatos.obtenerBDD(ctx)
+            turnoDAO = bdd?.turnoDao()
+            var turnos = turnoDAO?.buscarTurnoSig(turno_id)
+
+            if (turnos.isNullOrEmpty()){
+                turno_sig = turno
+            }
+            else{
+                turnos?.forEach {
+                    var t = Turno(
+                        id = it.id,
+                        fechahora = it.fechahora,
+                        estado = it.estado
+                    )
+                    turno_sig = t
+                }
+            }
+        }
+        thread.join()
+        return turno_sig
+    }
+
+
+    /**
+     * Busca el turno anterior al turno entregado
+     */
+    fun leerTurnoAnt(ctx:Context, turno: Turno):Turno?{
+        var turno_id = turno.id
+        var turno_ant:Turno? = null
+
+        val thread:Thread = thread(start = true) {
+            bdd = BaseDeDatos.obtenerBDD(ctx)
+            turnoDAO = bdd?.turnoDao()
+            var turnos = turnoDAO?.buscarTurnoAnt(turno_id)
+
+            //Si la lista es vacía, eso significa que no hay turnos anteriores y se devuelve el
+            // turno actual
+            if (turnos.isNullOrEmpty()){
+                turno_ant = turno
+            }
+            else{
+                turnos?.forEach {
+                    var t = Turno(
+                        id = it.id,
+                        fechahora = it.fechahora,
+                        estado = it.estado
+                    )
+                    turno_ant = t
+                }
+            }
+        }
+        thread.join()
+        return turno_ant
     }
 
 

@@ -414,11 +414,11 @@ function buscarDatosLoginUsuario($usuario_CI){
             try{
                 // set the PDO error mode to exception
                 $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                $consulta = "SELECT Usuario.ci, concat_ws(' ',Perfil.nombre,Perfil.apellido) FROM Usuario INNER JOIN Perfil WHERE Usuario.CI = Perfil.id";
+                $consulta = "SELECT Usuario.ci, concat_ws(' ',Perfil.nombre,Perfil.apellido) FROM Usuario INNER JOIN Perfil WHERE Usuario.ci = Perfil.id";
                 $sentencia = $conexion->prepare($consulta);
                 $sentencia->execute();
                 $resultado = $sentencia->fetchAll();
-                
+                echo "hasta aca OK";
                 foreach($resultado as $dato){
                     echo "<option value='".$dato['ci']."'>".$dato[1]."</option>";
                 }
@@ -426,9 +426,34 @@ function buscarDatosLoginUsuario($usuario_CI){
             }
         
             catch(PDOException $e){
-                $confirmacion->estado =  "Error";
-                $confirmacion->mensaje = $e->getMessage();
+                echo "Error ".$e->getMessage();
+            }
 
+            $conexion=null;
+    }
+    
+    /**
+    *  Obtiene la lista de doctores para un campo desplegable en la etiqueta SELECT 
+    *  
+    */
+
+    function generarListaDoctoresParaSelect(){
+         $conexion = GenerarConexion();
+            try{
+                // set the PDO error mode to exception
+                $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $consulta = "SELECT Doctor.ci, concat_ws(' ',Doctor.nombre, Doctor.apellido), Doctor.especialidad FROM Doctor";
+                $sentencia = $conexion->prepare($consulta);
+                $sentencia->execute();
+                $resultado = $sentencia->fetchAll();
+                echo "hasta aca OK";
+                foreach($resultado as $dato){
+                    echo "<option value='".$dato['ci']."'>".$dato[1]."-".$dato[2]."</option>";
+                }
+            }
+        
+            catch(PDOException $e){
+                echo "Error ".$e->getMessage();
             }
 
             $conexion=null;
@@ -438,7 +463,7 @@ function buscarDatosLoginUsuario($usuario_CI){
     *de un formulario HTML.
     */
     function generarListaMedicamentos(){
-        $medicamentos = new ListaMedicamento();
+        $medicamentos = new ListadoMedicamentos();
         $conexion = GenerarConexion();
         try{
             // set the PDO error mode to exception
@@ -517,13 +542,440 @@ function buscarDatosLoginUsuario($usuario_CI){
             $confirmacion->mensaje="Datos agregados con éxito";
         }
         catch(PDOException $e){
-           $confirmacion->mensaje = "Error: ".$e->getMessage();
-            $confirmacion->esestado = "ERROR";
+            $confirmacion->mensaje = "Error: ".$e->getMessage();
+            $confirmacion->estado = "ERROR";
         }
 
         $conexion=null;
         return $confirmacion;
     }
 
+    /**
+    * Busca las recetas de un usuario y las devuelve en un array
+    */
+    function buscarRecetasDeUsuario($usuario_ci){
+        $recetas = new Recetas();
+        
+        $conexion = GenerarConexion();
+        try{
+            // set the PDO error mode to exception
+            $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $consulta = "CALL recetas_de_usuario(:usuario_ci)";
+            $sentencia = $conexion->prepare($consulta);
+            $sentencia->bindParam(':usuario_ci', $usuario_ci);
+            $sentencia->execute();
+            $resultado = $sentencia->fetchAll();
+            
+            foreach($resultado as $dato){
+                $receta = new Receta();
+                $receta->especialista = $dato['especialista'];
+                $receta->fecha = $dato['fecha'];
+                $receta->id = $dato['receta_id'];
+                array_push($recetas->recetas,$receta);
+            }
+        }
+        catch(PDOException $e){
+            $confirmacion = new Confirmacion();
+            $confirmacion->mensaje = "Error: ".$e->getMessage();
+            $confirmacion->estado = "ERROR";
+            array_push($recetas->recetas,$confirmacion);
+        }
+        
+        $conexion=null;
+        return $recetas;
+        
+    }
+
+
+
+    /**
+    * Genera un listado de los medicamentos recetados no entregados
+    * El listado esta contenido en un array para su manejo.
+    */
+    function buscarMedicamentosRecetadosNoEnt($usuario_ci){
+        $listado = new ListadoMedRecetados();
+        
+        $conexion = GenerarConexion();
+        try{
+            // set the PDO error mode to exception
+            $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $consulta = "CALL medicamentos_recetados_no_ent(:usuario_ci)";
+            $sentencia = $conexion->prepare($consulta);
+            $sentencia->bindParam(':usuario_ci', $usuario_ci);
+            $sentencia->execute();
+            $resultado = $sentencia->fetchAll();
+            
+            //Preprocesado de los datos
+            //Por cada dato encontrado en el resultado... 
+            foreach($resultado as $dato){
+                //Procesamos el medicamento
+                $medicamento = new MedicamentoRecetado();
+                $medicamento->receta_id = $dato['receta_id'];
+                $medicamento->fecha = $dato['fecha'];
+                $medicamento->especialista = $dato['especialista'];
+                $medicamento->med_id = $dato['med_id'];
+                $medicamento->med_nombre = $dato['med_nombre'];
+                $medicamento->cantidad = (int)$dato['cantidad'];
+                $stock = (int)$dato['stock'];
+                //Procesamos la disponibilidad del medicamento
+                if($stock<$medicamento->cantidad){
+                    $medicamento->disponibilidad="NO DISPONIBLE";
+                }
+                else{
+                    $medicamento->disponibilidad="DISPONIBLE";
+                }
+                $medicamento->entregado = $dato['estado'];
+                //Agregamos el medicamento al array.
+                array_push($listado->medicamentos,$medicamento);
+            }
+        }
+        catch(PDOException $e){
+            $confirmacion = new Confirmacion();
+            $confirmacion->mensaje = "Error: ".$e->getMessage();
+            $confirmacion->estado = "ERROR";
+            array_push($listado->medicamentos,$confirmacion);
+        }
+
+        $conexion=null;
+        return $listado;
+    }
+
+    
+
+    /**
+    * Permite ingresar un nuevo turno libre al sistema
+    */
+    function crearTurno(Turno $turno){
+        $resultado = new Confirmacion();
+        $conexion = GenerarConexion();
+        try{
+            // set the PDO error mode to exception
+            $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $consulta = "INSERT INTO Turno(fechahora) VALUES (:fechahora)";
+            $sentencia = $conexion->prepare($consulta);
+            $sentencia->bindParam(':fechahora', $turno->fechaHora);
+            $sentencia->execute();
+            
+            $resultado->estado="OK";
+            $resultado->mensaje="Turno en la fecha:'$turno->fechaHora' creado con éxito";
+        }
+        catch(PDOException $e){
+            
+            $resultado->mensaje = "Error: ".$e->getMessage();
+            $resultado->estado = "ERROR";
+        }
+
+        $conexion=null;
+        return $resultado;
+    }
+
+
+/**
+    * Permite cerrar los turnos no usados en el sistema del día anterior
+    */
+    function cerrarTurnos(){
+        $fechaHoy=new DateTime();
+        $fechaAyer=$fechaHoy->sub(new DateInterval('P1D'));
+        
+        $anio=$fechaAyer->format("Y");
+        $mes=$fechaAyer->format("m");
+        $dia=$fechaAyer->format("d");
+        
+        $resultado = new Confirmacion();
+        $conexion = GenerarConexion();
+        try{
+            // set the PDO error mode to exception
+            $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $consulta = "UPDATE Turno SET estado='cancelado' WHERE estado='abierto' OR estado='confirmado' AND YEAR(fechahora)=:anio AND MONTH(fechahora)=:mes AND DAY(fechahora)=:dia";
+            $sentencia = $conexion->prepare($consulta);
+            $sentencia->bindParam(':anio', $anio);
+            $sentencia->bindParam(':mes', $mes);
+            $sentencia->bindParam(':dia', $dia);
+                        
+            $sentencia->execute();
+            
+            $resultado->estado="OK";
+            $resultado->mensaje="Turnos cerrados con éxito";
+        }
+        catch(PDOException $e){
+            
+            $resultado->mensaje = "Error: ".$e->getMessage();
+            $resultado->estado = "ERROR";
+        }
+
+        $conexion=null;
+        return $resultado;
+    }
+
+
+
+    /**
+    * Permite buscar el primer turno libre en el sistema
+    */
+    function buscarTurno(){
+        $turno = new Turno();
+        $conexion = GenerarConexion();
+        try{
+            // set the PDO error mode to exception
+            $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $consulta = "SELECT id, fechahora, estado FROM Turno WHERE estado='abierto' ORDER BY fechahora LIMIT 1";
+            $sentencia = $conexion->prepare($consulta);
+            $sentencia->execute();
+            $resultado = $sentencia->fetchAll();
+            
+            
+            $turno->id = $resultado[0]['id'];
+            $turno->estado = $resultado[0]['estado'];
+            $turno->fechaHora = $resultado[0]['fechahora'];
+        }
+        catch(PDOException $e){
+            
+            $turno->id = "0";
+            $turno->estado = "ERROR";
+            $turno->fechaHora = "Error: ".$e->getMessage();
+        }
+
+        $conexion=null;
+        return $turno;
+    }
+
+
+ /**
+    * Permite buscar el primer turno libre en el sistema
+    */
+    function buscarDatosTurno($turno_id){
+        $turno = new Turno();
+        $conexion = GenerarConexion();
+        try{
+            // set the PDO error mode to exception
+            $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $consulta = "SELECT id, fechahora, estado FROM Turno WHERE id = :turno_id";
+            $sentencia = $conexion->prepare($consulta);
+            $sentencia->bindParam(':turno_id', $turno_id);
+            
+            $sentencia->execute();
+            $resultado = $sentencia->fetchAll();
+            
+            
+            $turno->id = $resultado[0]['id'];
+            $turno->estado = $resultado[0]['estado'];
+            $turno->fechaHora = $resultado[0]['fechahora'];
+        }
+        catch(PDOException $e){
+            
+            $turno->id = "0";
+            $turno->estado = "ERROR";
+            $turno->fechaHora = "Error: ".$e->getMessage();
+        }
+
+        $conexion=null;
+        return $turno;
+    }
+
+
+/**
+    * Genera un listado de los turnos disponibles en el servidor
+    * El listado esta contenido en un array para su manejo.
+    */
+    function buscarTurnos(){
+        $listado = new Turnos();
+        
+        $conexion = GenerarConexion();
+        try{
+            // set the PDO error mode to exception
+            $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $consulta = "SELECT id, fechahora, estado FROM Turno WHERE estado='abierto' ORDER BY fechahora";
+            $sentencia = $conexion->prepare($consulta);
+            $sentencia->execute();
+            $resultado = $sentencia->fetchAll();
+            
+            //Preprocesado de los datos
+            //Por cada dato encontrado en el resultado... 
+            foreach($resultado as $dato){
+                //Procesamos el medicamento
+                $turno = new Turno();
+                $turno->id = $dato['id'];
+                $turno->estado = $dato['estado'];
+                $turno->fechaHora=$dato['fechahora'];
+                //Agregamos el medicamento al array.
+                array_push($listado->turnos,$turno);
+            }
+        }
+        catch(PDOException $e){
+            $confirmacion = new Confirmacion();
+            $confirmacion->mensaje = "Error: ".$e->getMessage();
+            $confirmacion->estado = "ERROR";
+            array_push($listado->turnos,$confirmacion);
+        }
+
+        $conexion=null;
+        return $listado;
+    }
+
+    /**
+    * Permite buscar un turno reservado por el usuario
+    */
+    function buscarTurnoDelUsuario($usuario_ci){
+        $turno =  new Turno();
+        //Datos de turno predefinidos por si no hay turnos
+        $turno->estado="---";
+        $turno->fechaHora="";
+        $turno->id="0";
+        
+        $conexion = GenerarConexion();
+        try{
+            // set the PDO error mode to exception
+            $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $consulta = "SELECT Genera.turno_id as 'turno_id', Turno.fechahora as 'fechahora', Turno.estado as 'estado' FROM Turno INNER JOIN Genera WHERE Turno.id = Genera.turno_id AND Genera.usuario_ci = :usuario_ci";
+            $sentencia = $conexion->prepare($consulta);
+            $sentencia->bindParam(':usuario_ci', $usuario_ci);
+            $sentencia->execute();
+            if($sentencia->rowcount()>0){
+                $resultado = $sentencia->fetchAll();
+                $turno->estado = $resultado[0]['estado'];
+                $turno->fechaHora = $resultado[0]['fechahora'];
+                $turno->id = $resultado[0]['turno_id'];
+            }
+        }
+        catch(PDOException $e){
+            $turno->estado = "ERROR";
+            $turno->fechaHora = "Error: ".$e->getMessage();
+        }
+        
+        $conexion=null;
+        return $turno;
+    }
+
+/**
+* Asigna una receta a un turno
+*/
+function asignarRecetaAturno($receta_id,$turno_id){
+    $confirmacion = new Confirmacion();
+    
+    $conexion = GenerarConexion();
+    try{
+        // set the PDO error mode to exception
+        $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $consulta = "INSERT INTO Asociado(receta_id,turno_id) VALUES (:receta_id,:turno_id)";
+        $sentencia = $conexion->prepare($consulta);
+        $sentencia->bindParam(':receta_id', $receta_id);
+        $sentencia->bindParam(':turno_id', $turno_id);
+        $sentencia->execute();
+    }
+    catch(PDOException $e){
+        $confirmacion = new Confirmacion();
+        $confirmacion->mensaje = "Error: ".$e->getMessage();
+        $confirmacion->estado = "ERROR";
+    }
+    $conexion=null;
+    return $confirmacion;
+    
+}
+
+
+
+/**
+* Asigna un todas las recetas de un usuario a un turno y lo asigna al usuario. 
+* Devuelve una confirmación
+*/
+ function solicitarTurno($usuario_ci, $turno_id){
+     $confirmacion = new Confirmacion();
+     
+     $turno_reservado= new Turno();
+     $turno = new Turno();
+     
+     $turno_reservado = buscarTurnoDelUsuario($usuario_ci);
+     $turno = buscarDatosTurno($turno_id);
+     
+     //Si la id del turno_reservado es 0, entonces el usuario no tiene ningún turno reservado
+     if(strcmp($turno_reservado->id,"0")==0){
+         //Si el estado del turno seleccionado es abierto, se puede continuar
+         if(strcmp($turno->estado,"abierto")==0){
+             
+        //Se deben conseguir todas las recetas del usuario
+            $recetas = new Recetas();
+            $recetas = buscarRecetasDeUsuario($usuario_ci);
+            
+             //Asigno las recetas al turno
+             foreach($recetas->recetas as $receta){
+                 asignarRecetaAturno($receta->id,$turno_id);
+             }
+            
+            //Asigno el turno al usuario 
+             
+            $conexion = GenerarConexion();
+            try{
+                // set the PDO error mode to exception
+                $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $consulta = "CALL asignar_turno(:usuario_ci,:turno_id)";
+                $sentencia = $conexion->prepare($consulta);
+                $sentencia->bindParam(':usuario_ci', $usuario_ci);
+                $sentencia->bindParam(':turno_id', $turno_id);
+                $sentencia->execute();
+                
+                $confirmacion->estado="OK";
+                $confirmacion->mensaje = "Se le ha asignado el turno $turno_id";
+            }
+            catch(PDOException $e){
+                $confirmacion->mensaje = "Error: ".$e->getMessage();
+                $confirmacion->estado = "ERROR";
+            }
+             $conexion = null;
+         }
+         else{
+             $confirmacion->estado="ERROR";
+             $confirmacion->mensaje="El turno ".$turno_id." ya no se encuentra disponible. Por favor actualice la lista de turnos y pruebe nuevamente.";
+         }
+     }
+     else{
+         $confirmacion->estado="ERROR";
+            $confirmacion->mensaje="Usted ya tiene un turno asignado en el sistema. Utilice o cancele ese turno para seleccionar un turno nuevo.";
+     }
+     
+     return $confirmacion;
+ }
+
+/**
+* Asigna un todas las recetas de un usuario a un turno y lo asigna al usuario. 
+* Devuelve una confirmación
+*/
+ function probarSolicitarTurno($usuario_ci, $turno_id){
+     $confirmacion = new Confirmacion();
+     
+     $turno_reservado= new Turno();
+     $turno = new Turno();
+     
+     $turno_reservado = buscarTurnoDelUsuario($usuario_ci);
+     $turno = buscarDatosTurno($turno_id);
+     
+     //Si la id del turno_reservado es 0, entonces el usuario no tiene ningún turno reservado
+     if(strcmp($turno_reservado->id,"0")==0){
+         //Si el estado del turno seleccionado es abierto, se puede continuar
+         if(strcmp($turno->estado,"abierto")==0){
+             
+        //Se deben conseguir todas las recetas del usuario
+            $recetas = new Recetas();
+            $recetas = buscarRecetasDeUsuario($usuario_ci);
+            
+             //Asigno las recetas al turno
+             foreach($recetas->recetas as $receta){
+                 echo $receta->id;
+                // asignarRecetaAturno($receta->id,$turno_id);
+             }
+            
+            //Asigno el turno al usuario 
+         }
+         else{
+             $confirmacion->estado="ERROR";
+             $confirmacion->mensaje="El turno ".$turno_id." ya no se encuentra disponible. Por favor actualice la lista de turnos y pruebe nuevamente.";
+         }
+     }
+     else{
+         $confirmacion->estado="ERROR";
+            $confirmacion->mensaje="Usted ya tiene un turno asignado en el sistema. Utilice o cancele ese turno para seleccionar un turno nuevo.";
+     }
+     
+     return $confirmacion;
+ }
 
 ?>

@@ -6,12 +6,21 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [Sesion::class,Usuario::class],version = 1)
+@Database(
+    entities = [
+    Sesion::class,
+    Usuario::class,
+    MedicamentoRecetado::class,
+    Turno::class
+    ],
+    version = 1)
 abstract class BaseDeDatos:RoomDatabase() {
 
     //Provee acceso a los métodos relacionados a las consultas
     abstract fun sesionDao():SesionDAO
     abstract fun usuarioDao():UsuarioDAO
+    abstract fun medicamentoRecetadoDao():MedicamentoRecetadoDAO
+    abstract fun turnoDao():TurnoDAO
 
     //Permite acceso mediante un "singleton", que permite usar los métodos sin generar instancias
     companion object{

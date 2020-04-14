@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#E7EFFAF9">
 
     <TextView
         android:id="@+id/tv_MenuPrincipalTitulo"
@@ -13,6 +13,7 @@
         android:layout_marginTop="16dp"
         android:gravity="center"
         android:text="@string/iniciar_sesion_Titulo"
+        android:textColor="@color/colorTitulos"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -85,10 +86,10 @@
             <ImageButton
                 android:id="@+id/imageButton7"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="32dp"
                 android:layout_weight="1"
+                android:background="@color/colorMenuBtnReservar"
                 android:onClick="nuevaReserva"
-                app:layout_constraintStart_toStartOf="parent"
                 app:srcCompat="@drawable/ic_add_circle_black_24dp" />
 
             <Space
@@ -99,10 +100,10 @@
             <ImageButton
                 android:id="@+id/imageButton8"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="32dp"
                 android:layout_weight="1"
+                android:background="@color/colorMenuBtnCancelar"
                 android:onClick="cancelarReserva"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:srcCompat="@drawable/ic_indeterminate_check_box_black_24dp" />
         </TableRow>
 

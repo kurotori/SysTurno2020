@@ -4,8 +4,10 @@ import android.content.Intent
 import android.view.View
 import android.content.Context
 import android.content.DialogInterface
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import com.example.systurnomobile.Fragmentos.DialogoEspera
 import com.example.systurnomobile.IniciarSesion
 import com.example.systurnomobile.MenuPrincipal
 import com.example.systurnomobile.R
@@ -13,12 +15,14 @@ import kotlin.concurrent.thread
 
 class ManejoDeGUI {
 
+
     /**
      * Permite cambiar de Layout
      */
     fun cambiarLayout(){
 
     }
+
 
     /**
      * Abre la actividad Menú Principal
@@ -174,6 +178,23 @@ class ManejoDeGUI {
         }
         thread.join()
         accionQueEspera()
+    }
+
+    /**
+     * Ejecuta una acción, mostrando un diálogo de espera y pasa a una actividad nueva
+     */
+    fun ejecutarYPasarA(ctx: Context,
+                        accion: () -> Unit,
+                        intent: Intent
+                        ){
+        var dialogoEspera = mostrarDialogoEspera(ctx)
+        dialogoEspera?.show()
+        val thread = thread(start = true) {
+            accion()
+        }
+        thread.join()
+        dialogoEspera?.dismiss()
+        ContextCompat.startActivity(ctx,intent,null)
     }
 
 

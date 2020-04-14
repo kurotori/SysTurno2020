@@ -1,6 +1,7 @@
 package com.example.systurnomobile.Herramientas
 
 import com.google.gson.Gson
+import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.lang.Exception
@@ -44,6 +45,22 @@ class ManejoJSON {
             println(e.message)
         }
 
+        return resultado
+    }
+
+    fun SacarObjetoJSON(stringJson:String, objeto:String):JSONArray{
+        val gson:Gson = Gson()
+        var resultado:JSONArray = JSONArray()
+        try{
+            var datoJSON:JSONObject = JSONObject(stringJson)
+            resultado= datoJSON.getJSONArray(objeto)
+        }
+        catch(e:Exception){
+            println(e.message)
+        }
+        catch(e:JSONException){
+            println(e.message)
+        }
         return resultado
     }
 

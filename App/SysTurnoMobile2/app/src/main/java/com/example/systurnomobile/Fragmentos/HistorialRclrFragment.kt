@@ -33,12 +33,15 @@ class HistorialRclrFragment : Fragment(){
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View? =
+        //historial_recicler es el layout donde establecemos la aparience de la actividad
+        // que contiene el ReciclerView
         inflater.inflate(R.layout.historial_recicler, container, false)
 
 
     // Wait until your View is guaranteed not null to grab View elements
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        //listado_recicler se encuentra en historial_recicler.xml en los layouts
         listado_recicler.apply {
             // set a LinearLayoutManager to handle Android
                 // RecyclerView behavior

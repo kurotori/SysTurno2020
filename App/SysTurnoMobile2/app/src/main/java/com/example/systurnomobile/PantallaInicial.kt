@@ -25,10 +25,10 @@ class PantallaInicial : AppCompatActivity() {
         //IMPORTANTE: Se inicializa la clase para manejar las solicitudes
         Solicitud.init(this)
 
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this/*  Activity context */)
-        var ipServidor = sharedPreferences.getString("ipServidor","").toString()
+        //val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this/*  Activity context */)
+        //var ipServidor = sharedPreferences.getString("ipServidor","").toString()
 
-        val manejoURL = ManejoURL(ipServidor)
+        val manejoURL = ManejoURL()
 
         var sesion: Sesion? = manejoBDD.leerSesion(this)
         println("Leyendo la sesion")

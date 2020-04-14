@@ -16,6 +16,7 @@ class AcercaDe : AppCompatActivity() {
     }
 
     fun volverAMenu(v: View){
+        
         this.finish()
     }
 }
