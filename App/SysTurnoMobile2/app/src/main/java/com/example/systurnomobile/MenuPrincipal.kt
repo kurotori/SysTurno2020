@@ -103,15 +103,14 @@ class MenuPrincipal : AppCompatActivity() {
 
 
     fun nuevaReserva(v: View){
-        //manejoURL?.buscarMedicamentosRecetadosNoEnt(v.context,usuario!!,sesion!!)
         val intent: Intent = Intent(v.context, SolicitarTurnoRclrMain::class.java)
+        manejoURL?.buscarTurnosAbiertos(v.context,usuario!!,sesion!!)
         manejoURL?.buscarMedicamentosRecetadosNoEntIrA(v.context,usuario!!,sesion!!,intent)
-        //startActivity(intent)
     }
 
     fun cancelarReserva(v:View){
-        //val intent: Intent = Intent(this, CancelarTurno::class.java)
-        //startActivity(intent)
+        val intent: Intent = Intent(this, CancelarTurnoRclrMain::class.java)
+        manejoURL?.buscarTurnoSolicitado(ctx!!,usuario!!,sesion!!,intent)
     }
 
     fun acercaDe(v:View){
@@ -121,7 +120,8 @@ class MenuPrincipal : AppCompatActivity() {
 
     fun verHistorial(v:View){
         val intent:Intent = Intent(v.context, HistorialRclrMain::class.java)
-        startActivity(intent)
+        manejoURL?.buscarTurnosDelUsuario(v.context,usuario!!,sesion!!,intent)
+        //startActivity(intent)
     }
 
     fun verTelsYDirs(v:View){

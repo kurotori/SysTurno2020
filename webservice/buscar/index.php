@@ -20,6 +20,8 @@ header("Content-Type: application/json; charset=UTF-8");
 // 10 - Perfil de usuario
 // 11 - Medicamentos recetados y no entregados a un usuario
 // 20 - El primer turno abierto disponible
+// 21 - Todos los turnos disponibles
+// 30 - Todos los turnos del usuario
 if($_POST){
     //echo "ok POST|";
     //Se chequean sistemáticamente los datos de sesión para validar el proceso
@@ -64,9 +66,11 @@ if($_POST){
                             case "21":
                                 $resultado = buscarTurnos();
                                 break;
-                            case "4":
-                                buscarHistorialTurnosUsuario();
+                            case "30":
+                                $resultado = buscarTurnosDelUsuario($usuario_ci);
                                 break;
+                            case "31":
+                                $resultado = buscarDatosDeTurnoSolicitado($usuario_ci);
                         }
                         
                         http_response_code(200);

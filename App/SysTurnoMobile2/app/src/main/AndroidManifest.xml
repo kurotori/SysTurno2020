@@ -16,8 +16,9 @@
         android:roundIcon="@mipmap/icono_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".AcercaDe"></activity>
-        <activity android:name=".SolicitarTurnoRclrMain"></activity>
+        <activity android:name=".CancelarTurnoRclrMain"></activity>
+        <activity android:name=".AcercaDe" />
+        <activity android:name=".SolicitarTurnoRclrMain" />
         <activity android:name=".Recordatorios" />
         <activity android:name=".HistorialRclrMain" />
         <activity android:name=".Registro" />

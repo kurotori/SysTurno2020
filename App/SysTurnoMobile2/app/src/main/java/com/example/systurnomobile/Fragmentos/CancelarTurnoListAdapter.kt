@@ -3,18 +3,17 @@ package com.example.systurnomobile.Fragmentos
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.login.HistorialRclrFragment
-import com.example.login.HistorialRclrViewHolder
 import com.example.systurnomobile.BDD.MedicamentoRecetado
+import java.text.FieldPosition
 
-class SolicitarTurnoListAdapter(private val lista:List<MedicamentoRecetado>?):RecyclerView.Adapter<SolicitarTurnoRclrViewHolder>() {
+class CancelarTurnoListAdapter(private val lista:List<MedicamentoRecetado>): RecyclerView.Adapter<CancelarTurnoViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SolicitarTurnoRclrViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):CancelarTurnoViewHolder{
         val inflater = LayoutInflater.from(parent.context)
-        return SolicitarTurnoRclrViewHolder(inflater, parent)
+        return CancelarTurnoViewHolder(inflater,parent)
     }
 
-    override fun onBindViewHolder(holder: SolicitarTurnoRclrViewHolder, position: Int) {
+    override fun onBindViewHolder(holder:CancelarTurnoViewHolder, position: Int){
         val dato: MedicamentoRecetado? = if(lista==null){
             MedicamentoRecetado(0,0,"jaja","",0,"",0,"","")
         }else{

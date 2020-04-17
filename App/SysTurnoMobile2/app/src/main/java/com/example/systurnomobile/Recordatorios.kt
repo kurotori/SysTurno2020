@@ -37,13 +37,15 @@ class Recordatorios : AppCompatActivity() {
         //var ipServidor = sharedPreferences.getString("ipServidor","").toString()
         manejoURL = ManejoURL()
 
+        val d = manejoDeGUI.mostrarDialogoEspera(ctx!!)
+        d?.show()
         var datosUsuario = manejoBDD.leerDatosUsuario(this)
         var nuevosDatos:Usuario?=null
         sesion=manejoBDD.leerSesion(this)
 
         manejoURL!!.buscarDatosUsuario(this,datosUsuario!!,sesion!!,null)
         datosUsuario = manejoBDD.leerDatosUsuario(this)
-
+        d?.dismiss()
         var recibeSMS = datosUsuario?.recibe_sms.toString()
         var recibeEmail = datosUsuario?.recibe_email.toString()
 
@@ -130,7 +132,10 @@ class Recordatorios : AppCompatActivity() {
 
     }
 
-
+    fun volverAMenu(v: View){
+        val intent = Intent(v.context, MenuPrincipal::class.java)
+        startActivity(intent)
+    }
 
 
 

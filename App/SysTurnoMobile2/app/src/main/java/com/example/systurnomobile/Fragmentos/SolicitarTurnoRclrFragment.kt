@@ -38,27 +38,12 @@ class SolicitarTurnoRclrFragment():Fragment(){
     // Wait until your View is guaranteed not null to grab View elements
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //rclrvw_solicitarTurno_listado se encuentra en solicitar_turno_recicler.xml en los layouts
-        rclrvw_solicitarTurno_listado.apply {
-            // set a LinearLayoutManager to handle Android
-            // RecyclerView behavior
-            layoutManager = LinearLayoutManager(activity)
-            // set the custom adapter to the RecyclerView
-            datos = manejoBDD.leerMedicamentosRecetados(this.context)
 
-            if(datos?.size==0){
-                manejoDeGUI.mostrarAdvertencia("ATENCIÓN",
-                    "No se encontraron medicamentos para retirar",
-                    this.context
-                )?.show()
-                btn_solicitarTurno_Confirmar.isEnabled = false
-            }
-            adapter = SolicitarTurnoListAdapter(datos) }
         // find your view elements and do stuff here
 
         //Búsqueda de datos
-        var usuario:Usuario?=null
-        var sesion:Sesion?=null
+        var usuario:Usuario?
+        var sesion:Sesion?
         var turno: Turno?=null
         var ctx = this.context
 
@@ -77,6 +62,23 @@ class SolicitarTurnoRclrFragment():Fragment(){
 
             }
         }
+
+        //rclrvw_solicitarTurno_listado se encuentra en solicitar_turno_recicler.xml en los layouts
+        rclrvw_solicitarTurno_listado.apply {
+            // set a LinearLayoutManager to handle Android
+            // RecyclerView behavior
+            layoutManager = LinearLayoutManager(activity)
+            // set the custom adapter to the RecyclerView
+            datos = manejoBDD.leerMedicamentosRecetados(this.context)
+
+            if(datos?.size==0){
+                manejoDeGUI.mostrarAdvertencia("ATENCIÓN",
+                    "No se encontraron medicamentos para retirar",
+                    this.context
+                )?.show()
+                btn_solicitarTurno_Confirmar.isEnabled = false
+            }
+            adapter = SolicitarTurnoListAdapter(datos) }
 
         //Al presionar el boton de actualizar turnos
         btn_solicitarTurno_actTurno.setOnClickListener{
@@ -134,7 +136,7 @@ class SolicitarTurnoRclrFragment():Fragment(){
                 sesion = manejoBDD.leerSesion(ctx)
                 if (usuario != null && sesion != null){
                    var turno_id = tv_solicitarturno_proxTurno_num.text.toString()
-                   manejoURL.solicitarTurno(ctx!!,usuario!!,sesion!!,turno_id)
+                   manejoURL.solicitarTurno(ctx,usuario!!,sesion!!,turno_id)
                 }
             }
         }

@@ -93,4 +93,26 @@
         public $turnos=array();
     }
 
+    class TurnoSolicitado{
+        public $id="0";
+        public $fechaHora="";
+        public $estado="";
+        public $recetasDelTurno=array();
+    }
+    
+    class RecetaDelTurno{
+        public $id = "";
+        public $fecha = "";
+        public $especialista = "";
+        public $medicamentos = array();
+    }
+
+    class MedicamentoDeLaReceta{
+        public $med_id="";
+        public $med_nombre="";
+        public $cantidad="";
+        public $disponibilidad="";
+        public $entregado="";
+    }
+
 ?>

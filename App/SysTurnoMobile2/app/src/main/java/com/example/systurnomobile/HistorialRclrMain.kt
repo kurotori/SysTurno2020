@@ -1,5 +1,7 @@
 package com.example.systurnomobile
 
+import android.content.Intent
+import android.view.View
 import androidx.fragment.app.FragmentActivity
 import com.example.login.HistorialRclrFragment
 import com.example.systurnomobile.Fragmentos.SingleFragmentActivity
@@ -13,4 +15,9 @@ import com.example.systurnomobile.Fragmentos.SingleFragmentActivity
  */
 class HistorialRclrMain: SingleFragmentActivity()  {
     override fun createFragment() = HistorialRclrFragment.newInstance()
+
+    fun volverAMenu(v: View){
+        val intent = Intent(v.context, MenuPrincipal::class.java)
+        startActivity(intent)
+    }
 }

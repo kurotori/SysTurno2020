@@ -6,21 +6,28 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.systurnomobile.BDD.ManejoBDD
+import com.example.systurnomobile.BDD.MisTurnos
+import com.example.systurnomobile.BDD.Turno
+import com.example.systurnomobile.Herramientas.ManejoURL
 import com.example.systurnomobile.R
 import kotlinx.android.synthetic.main.historial_recicler.*
+import kotlin.concurrent.thread
 
-data class Dato(val fecha:String, val hora:String, val estado:String)
+//data class Dato(val fecha:String, val hora:String, val estado:String)
 
-class HistorialRclrFragment : Fragment(){
+class HistorialRclrFragment() : Fragment(){
 
-    //Estos son los datos que mostrar en el ReciclerView. Acá se deberían solicitar los datos del
-    //servidor
-    val datos = listOf<Dato>(
-        Dato("01/03/2020","9:30","usado"),
-        Dato("02/03/2020","9:45","cancelado"),
-        Dato("01/03/2020","9:30","usado"),
-        Dato("01/03/2020","9:30","usado"),
-        Dato("01/03/2020","9:30","confirmado")
+    private val manejoURL = ManejoURL()
+    private val manejoBDD = ManejoBDD()
+    private var historialListAdapter: HistorialListAdapter? = null
+    //Estos son datos de ejemplo que mostrar en el ReciclerView.
+    val datos = listOf<Turno>(
+        Turno(0,"01/03/2020 09:30","usado"),
+        Turno(1,"02/03/2020 09:45","cancelado"),
+        Turno(2,"01/03/2020 09:30","usado"),
+        Turno(3,"01/03/2020 09:30","usado"),
+        Turno(4,"01/03/2020 09:30","confirmado")
     )
 
 
@@ -41,13 +48,35 @@ class HistorialRclrFragment : Fragment(){
     // Wait until your View is guaranteed not null to grab View elements
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        var datos2:MutableList<MisTurnos>? = null
+
+        val ctx = this.context
+        val usuario = manejoBDD.leerDatosUsuario(ctx!!)
+        val sesion = manejoBDD.leerSesion(ctx!!)
+
+        if(ctx!=null){
+            datos2 = manejoBDD.leerMisTurnos(ctx!!)
+        }
+
+        historialListAdapter = HistorialListAdapter(datos2!!)
+
+        with(listado_recicler){
+            layoutManager = LinearLayoutManager(activity)
+            adapter = historialListAdapter
+        }
+        historialListAdapter?.notifyDataSetChanged()
+
         //listado_recicler se encuentra en historial_recicler.xml en los layouts
-        listado_recicler.apply {
+       // listado_recicler.apply {
             // set a LinearLayoutManager to handle Android
                 // RecyclerView behavior
-                layoutManager = LinearLayoutManager(activity)
+
             // set the custom adapter to the RecyclerView
-                adapter = HistorialListAdapter(datos) }
+
+           // }
+
+
+
         // find your view elements and do stuff here
     }
 

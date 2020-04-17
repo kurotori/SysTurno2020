@@ -18,7 +18,7 @@ header("Content-Type: application/json; charset=UTF-8");
 
 //Tipos de solicitud:
 // 100 - Asignar turno a usuario
-// 
+// 101 - Cancelar turno solicitado
 // 
 if($_POST){
     //echo "ok POST|";
@@ -53,6 +53,9 @@ if($_POST){
                         switch($tipo){
                             case "100":
                                 $resultado = solicitarUnTurno($usuario_ci);
+                                break;
+                            case "101":
+                                $resultado = cancelarTurnoSolicitado($usuario_ci);
                                 break;
                         }
                         

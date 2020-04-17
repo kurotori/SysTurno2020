@@ -72,7 +72,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/tv_CancReservaFecha"
+                        android:id="@+id/tv_CancReserva_Fecha"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -94,7 +94,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/tv_CancReservaNum"
+                        android:id="@+id/tv_CancReserva_Num"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -117,7 +117,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/tv_CancReservaHora"
+                        android:id="@+id/tv_CancReserva_Hora"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -275,8 +275,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:background="@color/colorMenuBtnCancelar"
                 android:onClick="cancelarTurno"
-                android:text="Cancelar Este Turno" />
+                android:text="Cancelar Turno"
+                android:textColor="#FFFFFF" />
         </TableRow>
     </TableLayout>
 

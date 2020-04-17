@@ -605,4 +605,130 @@ class ManejoURL() {
         }
     }
 
+    /**
+     * Solicita el listado de turnos de un usuario
+     */
+    fun buscarTurnosDelUsuario(ctx:Context,
+                             usuario:Usuario,
+                             sesion: Sesion,
+                               intent: Intent
+    ){
+        //Se muestra el diálogo de espera
+        var dialogo = manejoDeGUI.mostrarDialogoEspera(ctx)
+        dialogo?.show()
+
+        //1 - Validamos la solicitud
+        validarAccion(ctx,usuario,sesion){
+            //2 - Solicitamos los datos
+            val solicitud = Solicitud(
+                urlBuscar.toString(),
+                {
+                    var respuesta:RespMisTurnos= RespMisTurnos(it.toString())
+                    var turnos = respuesta.listaMisTurnos()
+
+                    manejoBDD.borrarMisTurnos(ctx)
+                    turnos.forEach {
+                        manejoBDD.nuevoTurnoSolicitado(ctx,it)
+                    }
+                    dialogo?.dismiss()
+                    ContextCompat.startActivity(ctx,intent,null)
+                },
+                {
+                    println("ERROR: $it")
+                }
+            )
+            solicitud.POST(
+                "usuario_ci" to usuario.ci,
+                "token_val" to sesion.tokenVal.toString(),
+                "sesion_val" to sesion.sesionVal.toString(),
+                "tipo" to "30"
+            )
+        }
+    }
+
+    /**
+     * Solicita al servidor todos los datos del turno que haya sido solicitado por el usuario al sistema
+     * y pasa a la pantalla  de Cancelación de turno, renovando y guardando todos los datos relacionados.
+     * Si no encuentra turnos solicitados muestra una advertencia.
+     */
+    fun buscarTurnoSolicitado(ctx:Context,
+                              usuario:Usuario,
+                              sesion: Sesion,
+                              intent: Intent
+    ){
+        //Se muestra el diálogo de espera
+        var dialogo = manejoDeGUI.mostrarDialogoEspera(ctx)
+        dialogo?.show()
+        //1 - Validamos la solicitud
+        validarAccion(ctx,usuario,sesion){
+            val solicitud = Solicitud(
+                urlBuscar.toString(),
+                {
+                    var respuesta = RespTurnoSolicitado(it.toString())
+                    dialogo?.dismiss()
+                    if(respuesta.turnoSolicitado().id == 0){
+                        manejoDeGUI.mostrarAdvertencia("ATENCIÓN","Usted no tiene ningún turno activo a su nombre en el sistema.",ctx)?.show()
+                    }
+                    else{
+                        manejoBDD.borrarMisTurnos(ctx)
+                        manejoBDD.borrarMisRecetas(ctx)
+                        manejoBDD.borrarMedicamentos(ctx)
+
+                        manejoBDD.nuevoTurnoSolicitado(ctx,respuesta.turnoSolicitado())
+                        var listaRecetas = respuesta.recetasDelTurno()
+                        listaRecetas.forEach {
+                            manejoBDD.nuevaMiReceta(ctx,it)
+                        }
+                        respuesta.medicamentosDelTurno().forEach {
+                            manejoBDD.guardarMedicamentosRecetados(ctx,it)
+                        }
+                        ContextCompat.startActivity(ctx,intent,null)
+                    }
+                },
+                {
+                    println(it)
+                }
+            )
+            solicitud.POST(
+                "usuario_ci" to usuario.ci,
+                "token_val" to sesion.tokenVal.toString(),
+                "sesion_val" to sesion.sesionVal.toString(),
+                "tipo" to "31"
+            )
+        }
+    }
+
+    /**
+     * Solicita la cancelación de cualquier turno asignado al usuario.
+     */
+    fun cancelarTurnoSolicitado(ctx:Context,
+                                usuario:Usuario,
+                                sesion: Sesion
+    ){
+        //Se muestra el diálogo de espera
+        var dialogo = manejoDeGUI.mostrarDialogoEspera(ctx)
+        dialogo?.show()
+        //1 - Validamos la solicitud
+        validarAccion(ctx,usuario,sesion){
+            val solicitud = Solicitud(
+                urlTurnos.toString(),
+                {
+                    var respuesta = RespConfirmacion(it.toString())
+                    dialogo?.dismiss()
+                    manejoDeGUI.mostrarAdvertencia("",respuesta.mensaje(),ctx) {
+                        manejoDeGUI.irAMenuPrincipal(ctx)
+                    }?.show()
+                },
+                {
+                    println(it)
+                }
+            )
+            solicitud.POST(
+                "usuario_ci" to usuario.ci,
+                "token_val" to sesion.tokenVal.toString(),
+                "sesion_val" to sesion.sesionVal.toString(),
+                "tipo" to "101"
+            )
+        }
+    }
 }

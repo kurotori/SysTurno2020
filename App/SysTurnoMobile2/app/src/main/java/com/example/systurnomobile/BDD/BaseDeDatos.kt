@@ -11,7 +11,9 @@ import androidx.room.RoomDatabase
     Sesion::class,
     Usuario::class,
     MedicamentoRecetado::class,
-    Turno::class
+    Turno::class,
+    MisTurnos::class,
+    MisRecetas::class
     ],
     version = 1)
 abstract class BaseDeDatos:RoomDatabase() {
@@ -21,6 +23,8 @@ abstract class BaseDeDatos:RoomDatabase() {
     abstract fun usuarioDao():UsuarioDAO
     abstract fun medicamentoRecetadoDao():MedicamentoRecetadoDAO
     abstract fun turnoDao():TurnoDAO
+    abstract fun misTurnosDao():MisTurnosDAO
+    abstract fun misRecetasDao():MisRecetasDAO
 
     //Permite acceso mediante un "singleton", que permite usar los métodos sin generar instancias
     companion object{

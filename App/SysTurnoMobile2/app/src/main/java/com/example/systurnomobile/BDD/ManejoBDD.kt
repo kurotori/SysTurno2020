@@ -14,6 +14,8 @@ class ManejoBDD {
     private var usuarioDAO: UsuarioDAO? = null
     private var medicamentoRecetadoDAO: MedicamentoRecetadoDAO?=null
     private var turnoDAO: TurnoDAO?=null
+    private var misTurnosDAO: MisTurnosDAO? = null
+    private var misRecetasDAO:MisRecetasDAO? = null
 
     /**
      * Funcion de pruebas para guardar datos recibidos del servidor y leerlos
@@ -303,7 +305,7 @@ class ManejoBDD {
     }
 
     /**
-     * Borra todos los datos de Medicamentos de la base local
+     * Borra todos los datos de Medicamentos Recetados de la base local
      */
     fun borrarMedicamentos(ctx: Context){
         val thread:Thread = thread(start = true) {
@@ -427,5 +429,99 @@ class ManejoBDD {
         return turno_ant
     }
 
+    fun convertirTurno(turno:Turno):MisTurnos{
+        var mt = MisTurnos(
+            id = turno.id,
+            fechahora = turno.fechahora,
+            estado = turno.estado
+        )
+        return mt
+    }
 
+    /**
+     * Agrega los datos de un turno solicitado a la base local
+     */
+    fun nuevoTurnoSolicitado(ctx:Context, turno: MisTurnos){
+        val thread:Thread = thread(start = true){
+            bdd = BaseDeDatos.obtenerBDD(ctx)
+            misTurnosDAO = bdd?.misTurnosDao()
+
+            misTurnosDAO?.nuevoTurno(turno)
+        }
+        thread.join()
+    }
+
+    /**
+     * Borra los datos de todos los turnos solicitados7
+     */
+
+    fun borrarMisTurnos(ctx:Context){
+        val thread:Thread = thread(start = true){
+            bdd = BaseDeDatos.obtenerBDD(ctx)
+            misTurnosDAO = bdd?.misTurnosDao()
+            misTurnosDAO?.borrarMisTurnos()
+        }
+        thread.join()
+    }
+
+    /**
+     * Lee los datos de turnos solicitados de la base de datos local
+     */
+    fun leerMisTurnos(ctx:Context):MutableList<MisTurnos>{
+        var misTurnos:MutableList<MisTurnos> = ArrayList<MisTurnos>()
+        var thread = thread (start = true){
+            bdd = BaseDeDatos.obtenerBDD(ctx)
+            misTurnosDAO = bdd?.misTurnosDao()
+
+            var mt = misTurnosDAO?.todosMisTurnos()
+            mt?.forEach {
+                misTurnos?.add(it)
+            }
+        }
+        thread.join()
+        return misTurnos
+    }
+
+    /**
+     * Ingresar una nueva receta a la bdd local
+     */
+    fun nuevaMiReceta(ctx: Context,receta:MisRecetas){
+        val thread:Thread = thread(start = true){
+            bdd = BaseDeDatos.obtenerBDD(ctx)
+            misRecetasDAO = bdd?.misRecetasDao()
+
+            misRecetasDAO?.nuevaReceta(receta)
+        }
+        thread.join()
+    }
+
+    /**
+     * Borrar todas la recetas almacenadas en la bdd local
+     */
+    fun borrarMisRecetas(ctx: Context){
+        val thread:Thread = thread(start = true){
+            bdd = BaseDeDatos.obtenerBDD(ctx)
+            misRecetasDAO = bdd?.misRecetasDao()
+
+            misRecetasDAO?.borrarTodasMisRecetas()
+        }
+        thread.join()
+    }
+
+    /**
+     * Buscar las recetas de un turno específico
+     */
+    fun buscarRecetasDeTurno(turno_id: Int, ctx: Context):List<MisRecetas>{
+        var lista:MutableList<MisRecetas> = ArrayList()
+        val thread:Thread = thread(start = true) {
+            bdd = BaseDeDatos.obtenerBDD(ctx)
+            misRecetasDAO = bdd?.misRecetasDao()
+            var lr = misRecetasDAO?.buscarRecetasDelTurno(turno_id)
+            lr?.forEach {
+               lista.add(it)
+            }
+        }
+        thread.join()
+        return lista
+    }
 }
