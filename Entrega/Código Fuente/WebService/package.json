@@ -1,0 +1,20 @@
+{
+  "name": "systurno2020",
+  "version": "1.0.0",
+  "description": "proyecto BIT 2020",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node systurno.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kurotori/SysTurno2020.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kurotori/SysTurno2020/issues"
+  },
+  "homepage": "https://github.com/kurotori/SysTurno2020#readme"
+}

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+        <PreferenceCategory android:title="Datos del Servidor">
+
+                <EditTextPreference
+                    android:dependency=""
+                    android:key="ipServidor"
+                    android:selectAllOnFocus="true"
+                    android:singleLine="true"
+                    android:title="IP del Servidor"
+                    app:defaultValue="systurno-movil.000webhostapp.com"
+                    android:defaultValue="systurno-movil.000webhostapp.com"
+                    app:useSimpleSummaryProvider="true" />
+
+
+        </PreferenceCategory>
+</PreferenceScreen>

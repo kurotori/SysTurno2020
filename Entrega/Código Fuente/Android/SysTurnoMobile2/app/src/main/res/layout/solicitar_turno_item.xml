@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorRecetasEncabezado"
+            android:weightSum="10">
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5" />
+
+            <TextView
+                android:id="@+id/tv_solicitarTurno_med_nombre_tit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="5"
+                android:text="Medicamento"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5" />
+
+            <TextView
+                android:id="@+id/tv_solicitarTurno_cant_tit"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="4"
+                android:text="Cantidad"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorRecetasContenido"
+            android:weightSum="10">
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5" />
+
+            <TextView
+                android:id="@+id/tv_solicitarTurno_med_nombre"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="5"
+                android:maxLines="1"
+                android:minLines="1"
+                android:scrollbars="horizontal"
+                android:text="TextView"
+                android:textColor="#000000" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5" />
+
+            <TextView
+                android:id="@+id/tv_solicitarTurno_cant"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="4"
+                android:text="TextView"
+                android:textColor="#000000" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorRecetasContenido"
+            android:weightSum="4">
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="12dp"
+                android:layout_weight="4"
+                android:background="#000000"
+                android:foreground="@color/colorPrimaryDark" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorRecetasEncabezado"
+            android:weightSum="10">
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5" />
+
+            <TextView
+                android:id="@+id/tv_solicitarTurno_esp_nombre_tit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="5"
+                android:text="Recetado por"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5" />
+
+            <TextView
+                android:id="@+id/tv_solicitarTurno_fecha_tit"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3"
+                android:text="Fecha"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorRecetasContenido"
+            android:weightSum="10">
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5" />
+
+            <TextView
+                android:id="@+id/tv_solicitarTurno_esp_nombre"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="5"
+                android:text="TextView"
+                android:textSize="12sp" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5" />
+
+            <TextView
+                android:id="@+id/tv_solicitarTurno_fecha"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="4"
+                android:text="TextView"
+                android:textSize="12sp" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorSeparadorGris"
+            android:weightSum="4">
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="2dp"
+                android:layout_weight="4"
+                android:background="#000000"
+                android:foreground="@color/colorPrimaryDark" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorRecetasContenido"
+            android:weightSum="4">
+
+            <TextView
+                android:id="@+id/tvsolicitarTurno_disponibilidad_tit"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.8"
+                android:text="DISPONIBILIDAD:"
+                android:textAlignment="textEnd"
+                android:textStyle="bold" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.1" />
+
+            <TextView
+                android:id="@+id/tv_solicitarTurno_disponibilidad"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.9"
+                android:text="TextView" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="6dp"
+            android:background="#000000">
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="2dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#FFFFFF">
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="36dp" />
+        </TableRow>
+    </TableLayout>
+</LinearLayout>
