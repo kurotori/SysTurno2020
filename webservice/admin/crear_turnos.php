@@ -7,8 +7,9 @@
     header("Content-Type: application/json; charset=UTF-8");
 
     date_default_timezone_set('America/Montevideo');
-    $fecha = date('Y-m-d');
-    
+    $fechaDT = new DateTime('tomorrow');
+    $fecha = $fechaDT->format('Y-m-d');
+
     //echo "$fecha";
 
     $hora_inicio = 8;

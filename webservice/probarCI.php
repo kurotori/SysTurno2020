@@ -7,7 +7,7 @@ use Leewayweb\CiValidator\CiValidator;
 $civ = new CiValidator();
 
 //echo " --> ".($civ->validate_ci('38915368') ? 'true' : 'false').PHP_EOL;
-$prueba = ($civ->validate_ci('38915360') ? true : false);
+$prueba = ($civ->validate_ci('11111110') ? true : false);
 
 $prueba2 = buscarUsuarioExiste('38915369');
 
